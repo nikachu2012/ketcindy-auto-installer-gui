@@ -218,7 +218,11 @@ namespace KeTCindyAutoInstallerGUI
             {
             WriteLine($"Downloading {target} to {saveTo}\\{fileName}");
 
-            using (var response = await httpClient.GetAsync(target, HttpCompletionOption.ResponseHeadersRead))
+                var request = new HttpRequestMessage(HttpMethod.Get, target);
+                request.Headers.Add("User-Agent", "KeTCindy Auto Installer");
+                request.Headers.Add("X-GitHub-Api-Version", "2022-11-28");
+
+                using (var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead))
             using (var fileStream = File.Create(saveTo.FullName + "\\" + fileName))
             using (var httpStream = await response.Content.ReadAsStreamAsync())
             {
