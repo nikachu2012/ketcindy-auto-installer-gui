@@ -209,7 +209,7 @@ namespace KeTCindyAutoInstallerGUI
 
         private void WriteLine(string text)
         {
-            StatusBox.Text += "\r\n" + text;
+            StatusBox.Text += text + "\r\n";
         }
 
         private async Task DownloadFile(Uri target, DirectoryInfo saveTo, string fileName)
