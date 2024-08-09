@@ -81,10 +81,7 @@ namespace KeTCindyAutoInstallerGUI
 
                 // download KeTTeX
                 WriteLine("KeTTeX is downloading ...");
-                await Task.Run(async () =>
-                {
                     await DownloadFile(path_kettex, TempFolder, Path.GetFileName(path_kettex.AbsolutePath));
-                });
 
 
                 // Install KeTTeX
@@ -156,10 +153,7 @@ namespace KeTCindyAutoInstallerGUI
 
                 // download KeTCindy
                 WriteLine("KeTCindy is downloading ...");
-                await Task.Run(async () =>
-                {
                     await DownloadFile(path_ketcindy, TempFolder, Path.GetFileName(path_ketcindy.AbsolutePath));
-                });
 
                 // install KeTCindy
                 WriteLine("KeTCindy is installing ...");
@@ -220,6 +214,8 @@ namespace KeTCindyAutoInstallerGUI
 
         private async Task DownloadFile(Uri target, DirectoryInfo saveTo, string fileName)
         {
+            await Task.Run(async () =>
+            {
             WriteLine($"Downloading {target} to {saveTo}\\{fileName}");
 
             using (var response = await httpClient.GetAsync(target, HttpCompletionOption.ResponseHeadersRead))
@@ -231,6 +227,7 @@ namespace KeTCindyAutoInstallerGUI
             }
 
             WriteLine($"Downloaded successfully.");
+            });
         }
 
         private void CreateShortcut(string shortcutPath, string target)
