@@ -17,18 +17,25 @@ namespace KeTCindyAutoInstallerGUI
 {
     public partial class Form1 : Form
     {
-        private readonly Uri path_Cinderella = new Uri("https://beta.cinderella.de/Cinderella-3.0b.2085-64bit.exe");
-        private readonly Uri path_kettex = new Uri("https://github.com/ketpic/kettex/releases/download/v0.20240318/KeTTeX-windows-20240318.zip");
-        private readonly Uri path_R = new Uri("https://cran.r-project.org/bin/windows/base/R-4.4.1-win.exe");
-        private readonly Uri path_sumatra = new Uri("https://www.sumatrapdfreader.org/dl/rel/3.5.2/SumatraPDF-3.5.2-64-install.exe");
-        private readonly Uri path_maxima = new Uri("https://zenlayer.dl.sourceforge.net/project/maxima/Maxima-Windows/5.47.0-Windows/maxima-5.47.0-win64.exe?viasf=1");
-        private readonly Uri path_ketcindy = new Uri("https://github.com/ketpic/ketcindy/archive/refs/tags/4.4.85.zip");
+        private Uri path_Cinderella = new Uri("https://beta.cinderella.de/Cinderella-3.0b.2085-64bit.exe");
+        private Uri path_kettex = new Uri("https://github.com/ketpic/kettex/releases/download/v0.20240318/KeTTeX-windows-20240318.zip");
+        private Uri path_R = new Uri("https://cran.r-project.org/bin/windows/base/R-4.4.1-win.exe");
+        private Uri path_sumatra = new Uri("https://www.sumatrapdfreader.org/dl/rel/3.5.2/SumatraPDF-3.5.2-64-install.exe");
+        private Uri path_maxima = new Uri("https://zenlayer.dl.sourceforge.net/project/maxima/Maxima-Windows/5.47.0-Windows/maxima-5.47.0-win64.exe?viasf=1");
+        private Uri path_ketcindy = new Uri("https://github.com/ketpic/ketcindy/archive/refs/tags/4.4.85.zip");
 
         private static readonly HttpClient httpClient = new HttpClient();
 
         public Form1()
         {
             InitializeComponent();
+
+            WriteLine("Checking for software updates...");
+            CheckUpdateKeTCindy();
+            CheckUpdateKeTTeX();
+
+            WriteLine("Install start waiting...");
+
         }
 
         private async void InstallButton_Click(object sender, EventArgs e)
@@ -83,7 +90,7 @@ namespace KeTCindyAutoInstallerGUI
 
                 // download KeTTeX
                 WriteLine("KeTTeX is downloading ...");
-                    await DownloadFile(path_kettex, TempFolder, Path.GetFileName(path_kettex.AbsolutePath));
+                await DownloadFile(path_kettex, TempFolder, Path.GetFileName(path_kettex.AbsolutePath));
 
 
                 // Install KeTTeX
@@ -101,7 +108,7 @@ namespace KeTCindyAutoInstallerGUI
                     return true;
 #endif
                 }
-                
+
 
                 // zip file extract
                 System.IO.Compression.ZipFile.ExtractToDirectory(Path.Combine(TempFolder.FullName, Path.GetFileName(path_kettex.AbsolutePath)), kettexInstallerDirectory.FullName);
@@ -155,7 +162,7 @@ namespace KeTCindyAutoInstallerGUI
 
                 // download KeTCindy
                 WriteLine("KeTCindy is downloading ...");
-                    await DownloadFile(path_ketcindy, TempFolder, Path.GetFileName(path_ketcindy.AbsolutePath));
+                await DownloadFile(path_ketcindy, TempFolder, Path.GetFileName(path_ketcindy.AbsolutePath));
 
                 // install KeTCindy
                 WriteLine("KeTCindy is installing ...");
@@ -218,21 +225,21 @@ namespace KeTCindyAutoInstallerGUI
         {
             await Task.Run(async () =>
             {
-            WriteLine($"Downloading {target} to {saveTo}\\{fileName}");
+                WriteLine($"Downloading {target} to {saveTo}\\{fileName}");
 
                 var request = new HttpRequestMessage(HttpMethod.Get, target);
                 request.Headers.Add("User-Agent", "KeTCindy Auto Installer");
                 request.Headers.Add("X-GitHub-Api-Version", "2022-11-28");
 
                 using (var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead))
-            using (var fileStream = File.Create(saveTo.FullName + "\\" + fileName))
-            using (var httpStream = await response.Content.ReadAsStreamAsync())
-            {
-                httpStream.CopyTo(fileStream);
-                fileStream.Flush();
-            }
+                using (var fileStream = File.Create(saveTo.FullName + "\\" + fileName))
+                using (var httpStream = await response.Content.ReadAsStreamAsync())
+                {
+                    httpStream.CopyTo(fileStream);
+                    fileStream.Flush();
+                }
 
-            WriteLine($"Downloaded successfully.");
+                WriteLine($"Downloaded successfully.");
             });
         }
 
@@ -304,5 +311,70 @@ namespace KeTCindyAutoInstallerGUI
 
             return await response.Content.ReadFromJsonAsync<List<ReleaseObject>>();
         }
+
+        private async void CheckUpdateKeTCindy()
+        {
+            var list = await GetReleaseFromGitHub("https://api.github.com/repos/ketpic/ketcindy/releases");
+
+            // latest 
+            path_ketcindy = new Uri(list[0].zipball_url);
+            WriteLine($"Latest KeTCindy is \"{list[0].name}\"");
+
+            // create menu
+            list.ForEach(element =>
+            {
+                var versionItem = KeTCindyVersionToolStripMenuItem.DropDownItems.Add($"{element.name} ({element.tag_name})");
+                versionItem.ToolTipText = $"url: {element.zipball_url}";
+
+                versionItem.Click += (sender, e) =>
+                {
+                    WriteLine($"Changed KeTCindy \"{element.name}\" (url: {element.zipball_url})");
+                    path_ketcindy = new Uri(element.zipball_url);
+                };
+            });
+        }
+
+        private async void CheckUpdateKeTTeX()
+        {
+            var list = await GetReleaseFromGitHub("https://api.github.com/repos/ketpic/kettex/releases");
+
+            list[0].assets.ForEach(element =>
+            {
+                if (element.name.Contains("windows"))
+                {
+                    path_kettex = new Uri(element.browser_download_url);
+                }
+            });
+
+            WriteLine($"Latest KeTTeX is \"{list[0].name}\" ({list[0].tag_name})");
+
+            // create menu
+            list.ForEach(list_element =>
+            {
+                if (list_element.assets.Count == 0)
+                {
+                    return;
+                }
+
+
+                list_element.assets.ForEach(assets_element =>
+                {
+                    if (assets_element.name.Contains("windows"))
+                    {
+                        var versionItem = KeTTeXVersionToolStripMenuItem.DropDownItems.Add($"{list_element.name} ({list_element.tag_name})");
+
+                        versionItem.Click += (sender, e) =>
+                        {
+                            WriteLine($"Changed \"{list_element.name}\" (url: {assets_element.browser_download_url})");
+
+                            path_kettex = new Uri(assets_element.browser_download_url);
+                        };
+
+                    }
+                });
+            });
+        }
+
     }
 }
+
