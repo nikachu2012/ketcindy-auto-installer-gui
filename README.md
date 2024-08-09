@@ -8,6 +8,11 @@
 - SumatraPDF
 - Maxima
 - KeTCindy
+## 最新バージョンでの更新点
+<img width="361" alt="image" src="https://github.com/user-attachments/assets/533fae79-22eb-4796-a5dc-3801e5f615cf">
+
+v1.1より、KeTTeXとKeTCindyについて、GitHub APIから最新バージョンを取得することで、常に最新版がダウンロードされるようになりました。  
+上記画像のようにバージョンの選択を行うことも可能です。
 
 ## 使い方
 > [!IMPORTANT]
@@ -16,10 +21,14 @@
 1. 右側のReleasesから最新版をダウンロード
 2. ダブルクリックで実行(`Windows によってPCが保護されました`が表示されたら詳細情報→実行の順にクリック )
 3. Installボタンをクリック
-4. 設定用のCinderellaファイルが開いたら、"Kettex", "Mkinit", "Update", "Work"の順で黄色のボタンをクリック
-5. ウィンドウをすべて閉じる
+
+5. 設定用のCinderellaファイルが開いたら、"Kettex", "Mkinit", "Update", "Work"の順で黄色のボタンをクリック
+6. ウィンドウをすべて閉じる
 
 また、デスクトップにC:\ketcindyフォルダへのショートカットができます。
+
+## 更新履歴
+[Releases](https://github.com/nikachu2012/ketcindy-auto-installer-gui/releases)をご覧ください。
 
 ## p.s.
 - .NETで最初作ったけどランタイムインストールが必須って言われたから.NET Frameworkで作りなおした
