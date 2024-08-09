@@ -70,39 +70,13 @@ namespace KeTCindyAutoInstallerGUI
                 WriteLine("TEMP folder was created successfully.");
 
 
-                // Download Cinderella
+                // Cinderella
                 WriteLine("Cinderella is downloading ...");
-                await Task.Run(async () =>
+                if (await InstallExecutable(TempFolder, path_Cinderella, "-q"))
                 {
-                    await DownloadFile(path_Cinderella, TempFolder, Path.GetFileName(path_Cinderella.AbsolutePath));
-                });
-
-                // Install cinderella
-                WriteLine("Cinderella is installing ...");
-                var process_cinderella = Process.Start(new ProcessStartInfo
-                {
-                    FileName = Path.Combine(TempFolder.FullName, Path.GetFileName(path_Cinderella.AbsolutePath)),
-                    UseShellExecute = true,
-                    Verb = "RunAs",
-                    Arguments = "-q"
-                });
-
-                if (process_cinderella == null)
-                {
-                    WriteLine("Cinderella install proceess has not been started.");
+                    WriteLine("Cinderella install has been failed.");
                     return true;
                 }
-
-                // error Handling KetCindy 
-                process_cinderella.WaitForExit();
-
-                if (process_cinderella.ExitCode != 0)
-                {
-                    WriteLine("KeTCindy install proceess has not returned exit code 0.");
-                    return true;
-                }
-
-                process_cinderella.Close();
                 WriteLine("KeTCindy install has been finished successfully.");
 
                 // download KeTTeX
@@ -157,103 +131,27 @@ namespace KeTCindyAutoInstallerGUI
                 process_kettex.Close();
                 WriteLine("KeTTeX install has been finished successfully.");
 
-                // Download R
+                // R
                 WriteLine("R is downloading ...");
-                await Task.Run(async () =>
+                if (await InstallExecutable(TempFolder, path_R, "/silent"))
                 {
-                    await DownloadFile(path_R, TempFolder, Path.GetFileName(path_R.AbsolutePath));
-                });
-
-                // Install R
-                WriteLine("R is installing ...");
-                var process_R = Process.Start(new ProcessStartInfo
-                {
-                    FileName = Path.Combine(TempFolder.FullName, Path.GetFileName(path_R.AbsolutePath)),
-                    UseShellExecute = true,
-                    Verb = "RunAs",
-                    Arguments = "/silent"
-                });
-
-                if (process_R == null)
-                {
-                    WriteLine("R install proceess has not been started.");
+                    WriteLine("R install has been failed.");
                     return true;
                 }
-
-                // error Handling R 
-                process_R.WaitForExit();
-                if (process_R.ExitCode != 0)
-                {
-                    WriteLine("R install proceess has not returned exit code 0.");
-                    return true;
-                }
-                process_R.Close();
                 WriteLine("R install has been finished successfully.");
 
-                // download SumatraPDF
+                // SumatraPDF
                 WriteLine("SumatraPDF is downloading ...");
-                await Task.Run(async () =>
+                if (await InstallExecutable(TempFolder, path_sumatra, "-s -d \"C:\\Program Files\\SumatraPDF\""))
                 {
-                    await DownloadFile(path_sumatra, TempFolder, Path.GetFileName(path_sumatra.AbsolutePath));
-                });
-
-                // Install SumatraPDF
-                WriteLine("SumatraPDF is installing ...");
-                var process_SumatraPDF = Process.Start(new ProcessStartInfo
-                {
-                    FileName = Path.Combine(TempFolder.FullName, Path.GetFileName(path_sumatra.AbsolutePath)),
-                    UseShellExecute = true,
-                    Verb = "RunAs",
-                    Arguments = "-s -d \"C:\\Program Files\\SumatraPDF\""
-                });
-
-                if (process_SumatraPDF == null)
-                {
-                    WriteLine("SumatraPDF install proceess has not been started.");
+                    WriteLine("SumatraPDF install has been failed.");
                     return true;
                 }
-
-                // error Handling SumatraPDF
-                process_SumatraPDF.WaitForExit();
-                if (process_SumatraPDF.ExitCode != 0)
-                {
-                    WriteLine("SumatraPDF install proceess has not returned exit code 0.");
-                    return true;
-                }
-                process_SumatraPDF.Close();
                 WriteLine("SumatraPDF install has been finished successfully.");
 
-                // download Maxima
-                WriteLine("Maxima is downloading ...");
-                await Task.Run(async () =>
-                {
-                    await DownloadFile(path_maxima, TempFolder, Path.GetFileName(path_maxima.AbsolutePath));
-                });
-
-                // Install Maxima
+                // Maxima
                 WriteLine("Maxima is installing ...");
-                var process_maxima = Process.Start(new ProcessStartInfo
-                {
-                    FileName = Path.Combine(TempFolder.FullName, Path.GetFileName(path_maxima.AbsolutePath)),
-                    UseShellExecute = true,
-                    Verb = "RunAs",
-                    Arguments = "/S"
-                });
-
-                if (process_maxima == null)
-                {
-                    WriteLine("Maxima install proceess has not been started.");
-                    return true;
-                }
-
-                // error handling Maxima
-                process_maxima.WaitForExit();
-                if (process_maxima.ExitCode != 0)
-                {
-                    WriteLine("Maxima install proceess has not returned exit code 0.");
-                    return true;
-                }
-                process_maxima.Close();
+                await InstallExecutable(TempFolder, path_maxima, "/S");
                 WriteLine("Maxima install has been finished successfully.");
 
                 // download KeTCindy
@@ -352,6 +250,40 @@ namespace KeTCindyAutoInstallerGUI
 
             System.Runtime.InteropServices.Marshal.FinalReleaseComObject(shortcut);
             System.Runtime.InteropServices.Marshal.FinalReleaseComObject(wsh);
+        }
+
+        private async Task<bool> InstallExecutable(DirectoryInfo TempFolder, Uri url, string argument)
+        {
+            // Download
+            await DownloadFile(url, TempFolder, Path.GetFileName(url.AbsolutePath));
+
+
+            // Install install
+            var process = Process.Start(new ProcessStartInfo
+            {
+                FileName = Path.Combine(TempFolder.FullName, Path.GetFileName(url.AbsolutePath)),
+                UseShellExecute = true,
+                Verb = "RunAs",
+                Arguments = argument
+            });
+
+            if (process == null)
+            {
+                WriteLine("Install proceess has not been started.");
+                return true;
+            }
+
+            // error Handling 
+            process.WaitForExit();
+
+            if (process.ExitCode != 0)
+            {
+                WriteLine("install proceess has not returned exit code 0.");
+                return true;
+            }
+
+            process.Close();
+            return false;
         }
     }
 }
