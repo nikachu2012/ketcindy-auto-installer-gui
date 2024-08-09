@@ -198,7 +198,7 @@ namespace KeTCindyAutoInstallerGUI
                 WriteLine("Work folder shortcut is creating...");
                 var shortcutPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), "ketcindy");
                 var shortcutTarget = ketcindyInstallerDirectory.FullName;
-                createShortcut(shortcutPath, shortcutTarget);
+                CreateShortcut(shortcutPath, shortcutTarget);
 
                 // Cleanup TEMP folder
                 WriteLine("Cleanup TEMP folder");
@@ -233,7 +233,7 @@ namespace KeTCindyAutoInstallerGUI
             WriteLine($"Downloaded successfully.");
         }
 
-        private void createShortcut(string shortcutPath, string target)
+        private void CreateShortcut(string shortcutPath, string target)
         {
             var type = Type.GetTypeFromCLSID(new Guid("72C24DD5-D70A-438B-8A42-98424B88AFB8"));
             dynamic wsh = Activator.CreateInstance(type);
