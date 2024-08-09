@@ -7,7 +7,9 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -285,6 +287,22 @@ namespace KeTCindyAutoInstallerGUI
 
             process.Close();
             return false;
+        }
+
+        private async Task<List<ReleaseObject>> GetReleaseFromGitHub(string ApiUrl)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, ApiUrl);
+            request.Headers.Add("User-Agent", "KeTCindy Auto Installer");
+            request.Headers.Add("X-GitHub-Api-Version", "2022-11-28");
+
+            var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception("Response is not success(2xx).");
+            }
+
+            return await response.Content.ReadFromJsonAsync<List<ReleaseObject>>();
         }
     }
 }
