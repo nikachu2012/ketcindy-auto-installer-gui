@@ -56,7 +56,7 @@ namespace KeTCindyAutoInstallerGUI
                 if (TempFolder.Exists)
                 {
                     WriteLine("TEMP Path exists already.");
-                    WriteLine($"You should delete TEMP path. ({TempFolder.Name})");
+                    WriteLine($"[ERROR] You should delete the path. ({TempFolder.Name})");
 #if DEBUG
                     WriteLine($"You are in debug mode! delete TEMP Folder");
 
