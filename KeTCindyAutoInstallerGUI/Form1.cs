@@ -28,6 +28,8 @@ namespace KeTCindyAutoInstallerGUI
 
         public Form1()
         {
+            Text = "KeTCindy Auto Installer on GUI";
+
             InitializeComponent();
 
             WriteLine("Checking for software updates...");
@@ -35,21 +37,23 @@ namespace KeTCindyAutoInstallerGUI
             CheckUpdateKeTTeX();
 
             WriteLine("Install start waiting...");
-
         }
 
         private async void InstallButton_Click(object sender, EventArgs e)
         {
             WriteLine("Install started");
+            Text = "Installing - KeTCindy Auto Installer on GUI";
             InstallButton.Enabled = false;
 
             if (await Install())
             {
                 WriteLine("Install was not finished.");
+                Text = "Install failed - KeTCindy Auto Installer on GUI";
             }
             else
             {
                 WriteLine("Install had been finished successfully.");
+                Text = "Installed successfully - KeTCindy Auto Installer on GUI";
             }
 
             InstallButton.Enabled = true;

@@ -133,13 +133,13 @@
             // KeTCindyVersionToolStripMenuItem
             // 
             this.KeTCindyVersionToolStripMenuItem.Name = "KeTCindyVersionToolStripMenuItem";
-            this.KeTCindyVersionToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.KeTCindyVersionToolStripMenuItem.Size = new System.Drawing.Size(250, 34);
             this.KeTCindyVersionToolStripMenuItem.Text = "KeTCindy Version";
             // 
             // KeTTeXVersionToolStripMenuItem
             // 
             this.KeTTeXVersionToolStripMenuItem.Name = "KeTTeXVersionToolStripMenuItem";
-            this.KeTTeXVersionToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.KeTTeXVersionToolStripMenuItem.Size = new System.Drawing.Size(250, 34);
             this.KeTTeXVersionToolStripMenuItem.Text = "KeTTeX Version";
             // 
             // helpToolStripMenuItem
@@ -159,7 +159,7 @@
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "KeTCindy Auto Installer on GUI";
             this.panel1.ResumeLayout(false);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
