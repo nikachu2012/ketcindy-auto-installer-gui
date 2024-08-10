@@ -215,6 +215,7 @@ namespace KeTCindyAutoInstallerGUI
             catch (Exception ex)
             {
                 WriteLine($"Exception detected: {ex}");
+                return true;
             }
 
             return false;
