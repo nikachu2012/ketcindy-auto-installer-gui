@@ -24,7 +24,7 @@ namespace KeTCindyAutoInstallerGUI
         private Uri path_sumatra = new Uri("https://www.sumatrapdfreader.org/dl/rel/3.5.2/SumatraPDF-3.5.2-64-install.exe");
         private Uri path_maxima = new Uri("https://zenlayer.dl.sourceforge.net/project/maxima/Maxima-Windows/5.47.0-Windows/maxima-5.47.0-win64.exe?viasf=1");
         private Uri path_ketcindy = new Uri("https://github.com/ketpic/ketcindy/archive/refs/tags/4.4.85.zip");
-        
+
         private readonly HttpClient httpClient = new HttpClient
         {
             Timeout = Timeout.InfiniteTimeSpan
@@ -64,13 +64,24 @@ namespace KeTCindyAutoInstallerGUI
                 {
                     WriteLine("TEMP Path exists already.");
                     WriteLine($"[ERROR] You should delete the path. ({TempFolder.Name})");
-#if DEBUG
-                    WriteLine($"You are in debug mode! delete TEMP Folder");
 
-                    TempFolder.Delete(true);
-#else
-                    return true;
-#endif
+                    DialogResult result = MessageBox.Show($"Delete Temp folder ({TempFolder.Name})?",
+                        "Alert",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Error,
+                        MessageBoxDefaultButton.Button2
+                    );
+
+                    if (result == DialogResult.Yes)
+                    {
+                        TempFolder.Delete(true);
+
+                    }
+                    else
+                    {
+                        WriteLine("Installation has been canceled.");
+                        return true;
+                    }
                 }
 
                 TempFolder.Create();
@@ -99,12 +110,23 @@ namespace KeTCindyAutoInstallerGUI
                 {
                     WriteLine("KeTTeX install folder exists already.");
                     WriteLine($"You should delete the folder. ({kettexInstallerDirectory.FullName})");
-#if DEBUG
-                    WriteLine($"You are in debug mode! delete the folder");
-                    kettexInstallerDirectory.Delete(true);
-#else
-                    return true;
-#endif
+
+                    DialogResult result = MessageBox.Show($"Delete KeTTeX folder ({kettexInstallerDirectory.Name})?",
+                         "Alert",
+                         MessageBoxButtons.YesNo,
+                         MessageBoxIcon.Error,
+                         MessageBoxDefaultButton.Button2
+                    );
+
+                    if (result == DialogResult.Yes)
+                    {
+                        kettexInstallerDirectory.Delete(true);
+                    }
+                    else
+                    {
+                        WriteLine("Installation has been canceled.");
+                        return true;
+                    }
                 }
 
 
@@ -170,12 +192,23 @@ namespace KeTCindyAutoInstallerGUI
                 {
                     WriteLine("KeTCindy install folder exists already.");
                     WriteLine($"You should delete the folder. ({ketcindyInstallerDirectory.FullName})");
-#if DEBUG
-                    WriteLine($"You are in debug mode! delete the folder");
-                    ketcindyInstallerDirectory.Delete(true);
-#else
-                    return true;
-#endif
+
+                    DialogResult result = MessageBox.Show($"Delete KeTCindy folder ({TempFolder.Name})?",
+                        "Alert",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Exclamation,
+                        MessageBoxDefaultButton.Button2
+                    );
+
+                    if (result == DialogResult.Yes)
+                    {
+                        ketcindyInstallerDirectory.Delete(true);
+                    }
+                    else
+                    {
+                        WriteLine("Installation has been canceled.");
+                        return true;
+                    }
                 }
                 System.IO.Compression.ZipFile.ExtractToDirectory(Path.Combine(TempFolder.FullName, Path.GetFileName(path_ketcindy.AbsolutePath)), Path.Combine(TempFolder.FullName, "ketcindy"));
 
@@ -205,10 +238,13 @@ namespace KeTCindyAutoInstallerGUI
                 WriteLine("Cleanup TEMP folder");
                 TempFolder.Delete(true);
                 kettexInstallerDirectory.Delete(true);
+
+                WriteLine("!!! Install has been finished successfully.");
             }
             catch (Exception ex)
             {
                 WriteLine($"Exception detected: {ex}");
+                WriteLine("Error has been occured.");
                 return true;
             }
 
