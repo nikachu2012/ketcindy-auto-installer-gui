@@ -262,16 +262,21 @@ namespace KeTCindyAutoInstallerGUI
             {
                 WriteLine($"Downloading {target} to {saveTo}\\{fileName}");
 
-                var request = new HttpRequestMessage(HttpMethod.Get, target);
-                request.Headers.Add("User-Agent", "KeTCindy Auto Installer");
-                request.Headers.Add("X-GitHub-Api-Version", "2022-11-28");
+                var filePath = Path.Combine(saveTo.FullName, fileName);
+                var psCommand = $@"Start-BitsTransfer -Source ""{target}"" -Destination ""{filePath}""";
 
-                using (var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead))
-                using (var fileStream = File.Create(saveTo.FullName + "\\" + fileName))
-                using (var httpStream = await response.Content.ReadAsStreamAsync())
+                using (var process = new Process())
                 {
-                    httpStream.CopyTo(fileStream);
-                    fileStream.Flush();
+                    process.StartInfo.FileName = "powershell";
+                    process.StartInfo.Arguments = $"-Command \"{psCommand}\"";
+                    process.StartInfo.RedirectStandardOutput = true;
+                    process.StartInfo.RedirectStandardError = true;
+                    process.StartInfo.UseShellExecute = false;
+                    process.StartInfo.CreateNoWindow = true;
+
+                    process.Start();
+
+                    await Task.Run(() => process.WaitForExit());
                 }
 
                 WriteLine($"Downloaded successfully.");
