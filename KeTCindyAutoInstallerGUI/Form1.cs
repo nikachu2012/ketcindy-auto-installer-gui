@@ -21,7 +21,7 @@ namespace KeTCindyAutoInstallerGUI
         private Uri path_Cinderella = new Uri("https://beta.cinderella.de/Cinderella-3.0b.2085-64bit.exe");
         private Uri path_visualcpp = new Uri("https://aka.ms/vs/17/release/vc_redist.x64.exe");
         private Uri path_kettex = new Uri("https://github.com/ketpic/kettex/releases/download/v0.20240318/KeTTeX-windows-20240318.zip");
-        private Uri path_R = new Uri("https://cran.r-project.org/bin/windows/base/R-4.4.1-win.exe");
+        private Uri path_R = new Uri("https://cran.r-project.org/bin/windows/base/old/4.4.2/R-4.4.2-win.exe");
         private Uri path_sumatra = new Uri("https://www.sumatrapdfreader.org/dl/rel/3.5.2/SumatraPDF-3.5.2-64-install.exe");
         private Uri path_maxima = new Uri("https://zenlayer.dl.sourceforge.net/project/maxima/Maxima-Windows/5.47.0-Windows/maxima-5.47.0-win64.exe?viasf=1");
         private Uri path_ketcindy = new Uri("https://github.com/ketpic/ketcindy/archive/refs/tags/4.4.85.zip");
@@ -102,13 +102,13 @@ namespace KeTCindyAutoInstallerGUI
                 /// KeTTeX
                 /////////////////////////////////////////
                 // Download VC++ Package
-                WriteLine("Visual C++ Package is downloading ...");
-                if (await InstallExecutable(TempFolder, path_visualcpp, "/install /passive"))
-                {
-                    WriteLine("Visual C++ install has been failed.");
-                    return true;
-                }
-                WriteLine("Visual C++ install has been finished successfully.");
+                //WriteLine("Visual C++ Package is downloading ...");
+                //if (await InstallExecutable(TempFolder, path_visualcpp, "/install /passive"))
+                //{
+                //    WriteLine("Visual C++ install has been failed.");
+                //    return true;
+                //}
+                //WriteLine("Visual C++ install has been finished successfully.");
 
                 // download KeTTeX
                 WriteLine("KeTTeX is downloading ...");
