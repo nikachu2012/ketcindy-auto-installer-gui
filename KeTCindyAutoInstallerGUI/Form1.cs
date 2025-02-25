@@ -90,166 +90,200 @@ namespace KeTCindyAutoInstallerGUI
 
 
                 // Cinderella
-                WriteLine("Cinderella is downloading ...");
-                if (await InstallExecutable(TempFolder, path_Cinderella, "-q"))
+                if (cinderella2ToolStripMenuItem.Checked)
                 {
-                    WriteLine("Cinderella install has been failed.");
-                    return true;
+                    WriteLine("Cinderella is downloading ...");
+                    if (await InstallExecutable(TempFolder, path_Cinderella, "-q"))
+                    {
+                        WriteLine("Cinderella install has been failed.");
+                        return true;
+                    }
+                    WriteLine("KeTCindy install has been finished successfully.");
                 }
-                WriteLine("KeTCindy install has been finished successfully.");
+                else
+                {
+                    WriteLine("KeTCindy install is skipped.");
+                }
 
                 /////////////////////////////////////////
                 /// KeTTeX
                 /////////////////////////////////////////
-                // Download VC++ Package
-                //WriteLine("Visual C++ Package is downloading ...");
-                //if (await InstallExecutable(TempFolder, path_visualcpp, "/install /passive"))
-                //{
-                //    WriteLine("Visual C++ install has been failed.");
-                //    return true;
-                //}
-                //WriteLine("Visual C++ install has been finished successfully.");
-
-                // download KeTTeX
-                WriteLine("KeTTeX is downloading ...");
-                await DownloadFile(path_kettex, TempFolder, Path.GetFileName(path_kettex.AbsolutePath));
-
-
-                // Install KeTTeX
-                WriteLine("KeTTeX is installing ...");
-                var kettexInstallerDirectory = new DirectoryInfo("C:\\KETTEX-INSTALLER");
-
-                if (kettexInstallerDirectory.Exists)
+                if (keTTeXToolStripMenuItem.Checked)
                 {
-                    WriteLine("KeTTeX install folder exists already.");
-                    WriteLine($"You should delete the folder. ({kettexInstallerDirectory.FullName})");
+                    // download KeTTeX
+                    WriteLine("KeTTeX is downloading ...");
+                    await DownloadFile(path_kettex, TempFolder, Path.GetFileName(path_kettex.AbsolutePath));
 
-                    DialogResult result = MessageBox.Show($"Delete KeTTeX folder ({kettexInstallerDirectory.Name})?",
-                         "Alert",
-                         MessageBoxButtons.YesNo,
-                         MessageBoxIcon.Error,
-                         MessageBoxDefaultButton.Button2
-                    );
 
-                    if (result == DialogResult.Yes)
+                    // Install KeTTeX
+                    WriteLine("KeTTeX is installing ...");
+                    var kettexInstallerDirectory = new DirectoryInfo("C:\\KETTEX-INSTALLER");
+
+                    if (kettexInstallerDirectory.Exists)
                     {
-                        kettexInstallerDirectory.Delete(true);
+                        WriteLine("KeTTeX install folder exists already.");
+                        WriteLine($"You should delete the folder. ({kettexInstallerDirectory.FullName})");
+
+                        DialogResult result = MessageBox.Show($"Delete KeTTeX folder ({kettexInstallerDirectory.Name})?",
+                             "Alert",
+                             MessageBoxButtons.YesNo,
+                             MessageBoxIcon.Error,
+                             MessageBoxDefaultButton.Button2
+                        );
+
+                        if (result == DialogResult.Yes)
+                        {
+                            kettexInstallerDirectory.Delete(true);
+                        }
+                        else
+                        {
+                            WriteLine("Installation has been canceled.");
+                            return true;
+                        }
                     }
-                    else
+
+                    // zip file extract
+                    System.IO.Compression.ZipFile.ExtractToDirectory(Path.Combine(TempFolder.FullName, Path.GetFileName(path_kettex.AbsolutePath)), kettexInstallerDirectory.FullName);
+
+                    // run cmd file
+                    var process_kettex = Process.Start(new ProcessStartInfo
                     {
-                        WriteLine("Installation has been canceled.");
+                        FileName = Path.Combine(kettexInstallerDirectory.FullName, "kettexinst.cmd"),
+                        UseShellExecute = true,
+                        Verb = "RunAs",
+                    });
+
+                    if (process_kettex == null)
+                    {
+                        WriteLine("KeTTeX install proceess has not been started.");
                         return true;
                     }
+
+                    // error handling kettex
+                    process_kettex.WaitForExit();
+                    if (process_kettex.ExitCode != 0)
+                    {
+                        WriteLine("KeTTeX install proceess has not returned exit code 0.");
+                        return true;
+                    }
+                    process_kettex.Close();
+
+                    kettexInstallerDirectory.Delete(true);
+                    WriteLine("KeTTeX install has been finished successfully.");
                 }
-
-                // zip file extract
-                System.IO.Compression.ZipFile.ExtractToDirectory(Path.Combine(TempFolder.FullName, Path.GetFileName(path_kettex.AbsolutePath)), kettexInstallerDirectory.FullName);
-
-                // run cmd file
-                var process_kettex = Process.Start(new ProcessStartInfo
+                else
                 {
-                    FileName = Path.Combine(kettexInstallerDirectory.FullName, "kettexinst.cmd"),
-                    UseShellExecute = true,
-                    Verb = "RunAs",
-                });
-
-                if (process_kettex == null)
-                {
-                    WriteLine("KeTTeX install proceess has not been started.");
-                    return true;
+                    WriteLine("KeTTeX install is skipped.");
                 }
-
-                // error handling kettex
-                process_kettex.WaitForExit();
-                if (process_kettex.ExitCode != 0)
-                {
-                    WriteLine("KeTTeX install proceess has not returned exit code 0.");
-                    return true;
-                }
-                process_kettex.Close();
-                WriteLine("KeTTeX install has been finished successfully.");
 
                 // R
-                WriteLine("R is downloading ...");
-                if (await InstallExecutable(TempFolder, path_R, "/silent"))
+                if (rToolStripMenuItem.Checked)
                 {
-                    WriteLine("R install has been failed.");
-                    return true;
-                }
-                WriteLine("R install has been finished successfully.");
-
-                // SumatraPDF
-                WriteLine("SumatraPDF is downloading ...");
-                if (await InstallExecutable(TempFolder, path_sumatra, "-s -d \"C:\\Program Files\\SumatraPDF\""))
-                {
-                    WriteLine("SumatraPDF install has been failed.");
-                    return true;
-                }
-                WriteLine("SumatraPDF install has been finished successfully.");
-
-                // Maxima
-                WriteLine("Maxima is installing ...");
-                await InstallExecutable(TempFolder, path_maxima, "/S");
-                WriteLine("Maxima install has been finished successfully.");
-
-                // download KeTCindy
-                WriteLine("KeTCindy is downloading ...");
-                await DownloadFile(path_ketcindy, TempFolder, Path.GetFileName(path_ketcindy.AbsolutePath));
-
-                // install KeTCindy
-                WriteLine("KeTCindy is installing ...");
-                var ketcindyInstallerDirectory = new DirectoryInfo("C:\\ketcindy");
-
-                if (ketcindyInstallerDirectory.Exists)
-                {
-                    WriteLine("KeTCindy install folder exists already.");
-                    WriteLine($"You should delete the folder. ({ketcindyInstallerDirectory.FullName})");
-
-                    DialogResult result = MessageBox.Show($"Delete KeTCindy folder ({TempFolder.Name})?",
-                        "Alert",
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Exclamation,
-                        MessageBoxDefaultButton.Button2
-                    );
-
-                    if (result == DialogResult.Yes)
+                    WriteLine("R is downloading ...");
+                    if (await InstallExecutable(TempFolder, path_R, "/silent"))
                     {
-                        ketcindyInstallerDirectory.Delete(true);
-                    }
-                    else
-                    {
-                        WriteLine("Installation has been canceled.");
+                        WriteLine("R install has been failed.");
                         return true;
                     }
+                    WriteLine("R install has been finished successfully.");
                 }
-                System.IO.Compression.ZipFile.ExtractToDirectory(Path.Combine(TempFolder.FullName, Path.GetFileName(path_ketcindy.AbsolutePath)), Path.Combine(TempFolder.FullName, "ketcindy"));
-
-                var tempKetcindyFolder = new DirectoryInfo(Path.Combine(TempFolder.FullName, "ketcindy"));
-                Directory.Move(Path.Combine(TempFolder.FullName, "ketcindy", tempKetcindyFolder.GetDirectories()[0].Name), ketcindyInstallerDirectory.FullName);
-
-
-                WriteLine("ketcindysettings.cdy is opening...");
-                Process.Start(new ProcessStartInfo()
+                else
                 {
-                    FileName = Path.Combine(ketcindyInstallerDirectory.FullName, "doc", "ketcindysettings.cdy"),
-                    UseShellExecute = true
-                });
+                    WriteLine("R install is skipped.");
+                }
 
-                await Task.Run(() =>
+                // SumatraPDF
+                if (sumatraPDFToolStripMenuItem.Checked)
                 {
-                    MessageBox.Show("Click on \"Kettex\" \"Mkinit\" \"Update\" \"Work\"");
-                });
+                    WriteLine("SumatraPDF is downloading ...");
+                    if (await InstallExecutable(TempFolder, path_sumatra, "-s -d \"C:\\Program Files\\SumatraPDF\""))
+                    {
+                        WriteLine("SumatraPDF install has been failed.");
+                        return true;
+                    }
+                    WriteLine("SumatraPDF install has been finished successfully.");
+                }
+                else
+                {
+                    WriteLine("SumatraPDF install is skipped.");
+                }
 
-                // Create Working folder shortcut
-                WriteLine("Work folder shortcut is creating...");
-                var shortcutPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), "ketcindy");
-                var shortcutTarget = ketcindyInstallerDirectory.FullName;
-                CreateShortcut(shortcutPath, shortcutTarget);
+                // Maxima
+                if (sumatraPDFToolStripMenuItem.Checked)
+                {
+                    WriteLine("Maxima is installing ...");
+                    await InstallExecutable(TempFolder, path_maxima, "/S");
+                    WriteLine("Maxima install has been finished successfully.");
+                }
+                else
+                {
+                    WriteLine("Maxima install is skipped.");
+                }
+
+                // download KeTCindy
+                if (keTCindyToolStripMenuItem.Checked)
+                {
+                    WriteLine("KeTCindy is downloading ...");
+                    await DownloadFile(path_ketcindy, TempFolder, Path.GetFileName(path_ketcindy.AbsolutePath));
+
+                    // install KeTCindy
+                    WriteLine("KeTCindy is installing ...");
+                    var ketcindyInstallerDirectory = new DirectoryInfo("C:\\ketcindy");
+
+                    if (ketcindyInstallerDirectory.Exists)
+                    {
+                        WriteLine("KeTCindy install folder exists already.");
+                        WriteLine($"You should delete the folder. ({ketcindyInstallerDirectory.FullName})");
+
+                        DialogResult result = MessageBox.Show($"Delete KeTCindy folder ({TempFolder.Name})?",
+                            "Alert",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Exclamation,
+                            MessageBoxDefaultButton.Button2
+                        );
+
+                        if (result == DialogResult.Yes)
+                        {
+                            ketcindyInstallerDirectory.Delete(true);
+                        }
+                        else
+                        {
+                            WriteLine("Installation has been canceled.");
+                            return true;
+                        }
+                    }
+                    System.IO.Compression.ZipFile.ExtractToDirectory(Path.Combine(TempFolder.FullName, Path.GetFileName(path_ketcindy.AbsolutePath)), Path.Combine(TempFolder.FullName, "ketcindy"));
+
+                    var tempKetcindyFolder = new DirectoryInfo(Path.Combine(TempFolder.FullName, "ketcindy"));
+                    Directory.Move(Path.Combine(TempFolder.FullName, "ketcindy", tempKetcindyFolder.GetDirectories()[0].Name), ketcindyInstallerDirectory.FullName);
+
+
+                    WriteLine("ketcindysettings.cdy is opening...");
+                    Process.Start(new ProcessStartInfo()
+                    {
+                        FileName = Path.Combine(ketcindyInstallerDirectory.FullName, "doc", "ketcindysettings.cdy"),
+                        UseShellExecute = true
+                    });
+
+                    await Task.Run(() =>
+                    {
+                        MessageBox.Show("Click on \"Kettex\" \"Mkinit\" \"Update\" \"Work\"");
+                    });
+
+                    // Create Working folder shortcut
+                    WriteLine("Work folder shortcut is creating...");
+                    var shortcutPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), "ketcindy");
+                    var shortcutTarget = ketcindyInstallerDirectory.FullName;
+                    CreateShortcut(shortcutPath, shortcutTarget);
+                }
+                else
+                {
+                    WriteLine("KeTCindy install is skipped.");
+                }
 
                 // Cleanup TEMP folder
                 WriteLine("Cleanup TEMP folder");
                 TempFolder.Delete(true);
-                kettexInstallerDirectory.Delete(true);
 
                 WriteLine("!!! Install has been finished successfully.");
             }
