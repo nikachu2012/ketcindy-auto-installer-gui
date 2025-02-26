@@ -36,9 +36,6 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.configToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.KeTCindyVersionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.KeTTeXVersionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.インストールするソフトを選択ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cinderella2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.keTTeXToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -46,6 +43,11 @@
             this.sumatraPDFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.maximaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.keTCindyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.CinderellaVersionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.KeTCindyVersionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.KeTTeXVersionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.RVersionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.MaximaVersionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -66,7 +68,7 @@
             // 
             this.StatusBox.BackColor = System.Drawing.SystemColors.Window;
             this.StatusBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.StatusBox.Font = new System.Drawing.Font("Consolas", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.StatusBox.Font = new System.Drawing.Font("Yu Gothic UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.StatusBox.Location = new System.Drawing.Point(0, 85);
             this.StatusBox.Multiline = true;
             this.StatusBox.Name = "StatusBox";
@@ -88,6 +90,7 @@
             // 
             // InstallButton
             // 
+            this.InstallButton.Enabled = false;
             this.InstallButton.Font = new System.Drawing.Font("Yu Gothic UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.InstallButton.Location = new System.Drawing.Point(5, 5);
             this.InstallButton.Margin = new System.Windows.Forms.Padding(5);
@@ -105,8 +108,7 @@
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.configToolStripMenuItem,
-            this.helpToolStripMenuItem});
+            this.configToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(800, 33);
@@ -125,36 +127,21 @@
             // 
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
             this.closeToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(224, 34);
             this.closeToolStripMenuItem.Text = "閉じる";
             // 
             // configToolStripMenuItem
             // 
             this.configToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.KeTCindyVersionToolStripMenuItem,
+            this.インストールするソフトを選択ToolStripMenuItem,
+            this.CinderellaVersionToolStripMenuItem,
             this.KeTTeXVersionToolStripMenuItem,
-            this.インストールするソフトを選択ToolStripMenuItem});
+            this.RVersionToolStripMenuItem,
+            this.MaximaVersionToolStripMenuItem,
+            this.KeTCindyVersionToolStripMenuItem});
             this.configToolStripMenuItem.Name = "configToolStripMenuItem";
-            this.configToolStripMenuItem.Size = new System.Drawing.Size(81, 29);
-            this.configToolStripMenuItem.Text = "Config";
-            // 
-            // KeTCindyVersionToolStripMenuItem
-            // 
-            this.KeTCindyVersionToolStripMenuItem.Name = "KeTCindyVersionToolStripMenuItem";
-            this.KeTCindyVersionToolStripMenuItem.Size = new System.Drawing.Size(309, 34);
-            this.KeTCindyVersionToolStripMenuItem.Text = "KeTCindy Version";
-            // 
-            // KeTTeXVersionToolStripMenuItem
-            // 
-            this.KeTTeXVersionToolStripMenuItem.Name = "KeTTeXVersionToolStripMenuItem";
-            this.KeTTeXVersionToolStripMenuItem.Size = new System.Drawing.Size(309, 34);
-            this.KeTTeXVersionToolStripMenuItem.Text = "KeTTeX Version";
-            // 
-            // helpToolStripMenuItem
-            // 
-            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(65, 29);
-            this.helpToolStripMenuItem.Text = "Help";
+            this.configToolStripMenuItem.Size = new System.Drawing.Size(64, 29);
+            this.configToolStripMenuItem.Text = "設定";
             // 
             // インストールするソフトを選択ToolStripMenuItem
             // 
@@ -223,6 +210,36 @@
             this.keTCindyToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
             this.keTCindyToolStripMenuItem.Text = "KeTCindy";
             // 
+            // CinderellaVersionToolStripMenuItem
+            // 
+            this.CinderellaVersionToolStripMenuItem.Name = "CinderellaVersionToolStripMenuItem";
+            this.CinderellaVersionToolStripMenuItem.Size = new System.Drawing.Size(309, 34);
+            this.CinderellaVersionToolStripMenuItem.Text = "Cinderellaのバージョン";
+            // 
+            // KeTCindyVersionToolStripMenuItem
+            // 
+            this.KeTCindyVersionToolStripMenuItem.Name = "KeTCindyVersionToolStripMenuItem";
+            this.KeTCindyVersionToolStripMenuItem.Size = new System.Drawing.Size(309, 34);
+            this.KeTCindyVersionToolStripMenuItem.Text = "KeTCindyのバージョン";
+            // 
+            // KeTTeXVersionToolStripMenuItem
+            // 
+            this.KeTTeXVersionToolStripMenuItem.Name = "KeTTeXVersionToolStripMenuItem";
+            this.KeTTeXVersionToolStripMenuItem.Size = new System.Drawing.Size(309, 34);
+            this.KeTTeXVersionToolStripMenuItem.Text = "KeTTeXのバージョン";
+            // 
+            // RVersionToolStripMenuItem
+            // 
+            this.RVersionToolStripMenuItem.Name = "RVersionToolStripMenuItem";
+            this.RVersionToolStripMenuItem.Size = new System.Drawing.Size(309, 34);
+            this.RVersionToolStripMenuItem.Text = "Rのバージョン";
+            // 
+            // MaximaVersionToolStripMenuItem
+            // 
+            this.MaximaVersionToolStripMenuItem.Name = "MaximaVersionToolStripMenuItem";
+            this.MaximaVersionToolStripMenuItem.Size = new System.Drawing.Size(309, 34);
+            this.MaximaVersionToolStripMenuItem.Text = "Maximaのバージョン";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
@@ -235,6 +252,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "KeTCindy Auto Installer on GUI";
+            this.Shown += new System.EventHandler(this.Form1_Shown);
             this.panel1.ResumeLayout(false);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -252,7 +270,6 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem configToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem KeTCindyVersionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem KeTTeXVersionToolStripMenuItem;
@@ -263,6 +280,9 @@
         private System.Windows.Forms.ToolStripMenuItem sumatraPDFToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem maximaToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem keTCindyToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem CinderellaVersionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem RVersionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem MaximaVersionToolStripMenuItem;
     }
 }
 

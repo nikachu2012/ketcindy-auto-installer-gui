@@ -1,15 +1,13 @@
-﻿using System;
+﻿using AngleSharp.Html.Dom;
+using AngleSharp.Html.Parser;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -18,30 +16,52 @@ namespace KeTCindyAutoInstallerGUI
 {
     public partial class Form1 : Form
     {
-        private Uri path_Cinderella = new Uri("https://beta.cinderella.de/Cinderella-3.0b.2085-64bit.exe");
-        private Uri path_visualcpp = new Uri("https://aka.ms/vs/17/release/vc_redist.x64.exe");
-        private Uri path_kettex = new Uri("https://github.com/ketpic/kettex/releases/download/v0.20240318/KeTTeX-windows-20240318.zip");
-        private Uri path_R = new Uri("https://cran.r-project.org/bin/windows/base/old/4.4.2/R-4.4.2-win.exe");
-        private Uri path_sumatra = new Uri("https://www.sumatrapdfreader.org/dl/rel/3.5.2/SumatraPDF-3.5.2-64-install.exe");
-        private Uri path_maxima = new Uri("https://zenlayer.dl.sourceforge.net/project/maxima/Maxima-Windows/5.47.0-Windows/maxima-5.47.0-win64.exe?viasf=1");
-        private Uri path_ketcindy = new Uri("https://github.com/ketpic/ketcindy/archive/refs/tags/4.4.85.zip");
+        private readonly Uri default_path_Cinderella = new Uri("https://beta.cinderella.de/Cinderella-3.0b.2085-64bit.exe");
+        private readonly Uri default_path_kettex = new Uri("https://github.com/ketpic/kettex/releases/download/v0.20240318/KeTTeX-windows-20240318.zip");
+        private readonly Uri default_path_R = new Uri("https://cran.r-project.org/bin/windows/base/old/4.4.2/R-4.4.2-win.exe");
+        private readonly Uri default_path_sumatra = new Uri("https://www.sumatrapdfreader.org/dl/rel/3.5.2/SumatraPDF-3.5.2-64-install.exe");
+        //private readonly Uri default_path_maxima = new Uri("https://zenlayer.dl.sourceforge.net/project/maxima/Maxima-Windows/5.47.0-Windows/maxima-5.47.0-win64.exe?viasf=1");
+        private readonly Uri default_path_maxima = new Uri("https://sourceforge.net/projects/maxima/files/Maxima-Windows/5.47.0-Windows/maxima-5.47.0-win64.exe/download");
+        private readonly Uri default_path_ketcindy = new Uri("https://github.com/ketpic/ketcindy/archive/refs/tags/4.4.85.zip");
+
+        private Uri path_Cinderella;
+        private Uri path_kettex;
+        private Uri path_R;
+        private Uri path_sumatra;
+        private Uri path_maxima;
+        private Uri path_ketcindy;
+
+        private readonly HtmlParser htmlParser = new HtmlParser();
 
         private readonly HttpClient httpClient = new HttpClient
         {
-            Timeout = Timeout.InfiniteTimeSpan
+            Timeout = Timeout.InfiniteTimeSpan,
         };
-
         public Form1()
         {
             Text = "KeTCindy Auto Installer on GUI";
 
             InitializeComponent();
+        }
 
+        private async void Form1_Shown(object sender, EventArgs e)
+        {
             WriteLine("Checking for software updates...");
-            CheckUpdateKeTCindy();
-            CheckUpdateKeTTeX();
 
-            WriteLine("Install start waiting...");
+            path_Cinderella = default_path_Cinderella;
+            path_kettex = default_path_kettex; 
+            path_R = default_path_R;
+            path_sumatra = default_path_sumatra; 
+            path_maxima = default_path_maxima;
+            path_ketcindy = default_path_ketcindy;
+
+            await CheckUpdateCinderella2();
+            await CheckUpdateKeTTeX();
+            await CheckUpdateR();
+            CheckUpdateMaxima(); // not need await
+            await CheckUpdateKeTCindy();
+
+            InstallButton.Enabled = true;
         }
 
         private async void InstallButton_Click(object sender, EventArgs e)
@@ -57,7 +77,7 @@ namespace KeTCindyAutoInstallerGUI
         {
             WriteLine($"Temp path: {System.IO.Path.GetTempPath()}");
 
-            DirectoryInfo TempFolder = new DirectoryInfo(System.IO.Path.GetTempPath() + "KETCINDYINSTALLER");
+            DirectoryInfo TempFolder = new DirectoryInfo(Path.Combine(System.IO.Path.GetTempPath(), "KETCINDYINSTALLER"));
 
             try
             {
@@ -212,7 +232,7 @@ namespace KeTCindyAutoInstallerGUI
                 if (maximaToolStripMenuItem.Checked)
                 {
                     WriteLine("Maxima is installing ...");
-                    await InstallExecutable(TempFolder, path_maxima, "/S");
+                    await InstallExecutable(TempFolder, path_maxima, "/S", "maxima.exe");
                     WriteLine("Maxima install has been finished successfully.");
                 }
                 else
@@ -309,7 +329,7 @@ namespace KeTCindyAutoInstallerGUI
                 WriteLine($"Downloading {target} to {saveTo}\\{fileName}");
 
                 var request = new HttpRequestMessage(HttpMethod.Get, target);
-                request.Headers.Add("User-Agent", "KeTCindy Auto Installer");
+                request.Headers.Add("User-Agent", "curl/8.12.1");
                 request.Headers.Add("X-GitHub-Api-Version", "2022-11-28");
 
                 using (var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead))
@@ -343,16 +363,16 @@ namespace KeTCindyAutoInstallerGUI
             System.Runtime.InteropServices.Marshal.FinalReleaseComObject(wsh);
         }
 
-        private async Task<bool> InstallExecutable(DirectoryInfo TempFolder, Uri url, string argument)
+        private async Task<bool> InstallExecutable(DirectoryInfo TempFolder, Uri url, string argument, string tempPath=null)
         {
             // Download
-            await DownloadFile(url, TempFolder, Path.GetFileName(url.AbsolutePath));
+            await DownloadFile(url, TempFolder, tempPath ?? Path.GetFileName(url.AbsolutePath));
 
 
             // Install install
             var process = Process.Start(new ProcessStartInfo
             {
-                FileName = Path.Combine(TempFolder.FullName, Path.GetFileName(url.AbsolutePath)),
+                FileName = Path.Combine(TempFolder.FullName, tempPath ?? Path.GetFileName(url.AbsolutePath)),
                 UseShellExecute = true,
                 Verb = "RunAs",
                 Arguments = argument
@@ -393,7 +413,7 @@ namespace KeTCindyAutoInstallerGUI
             return await response.Content.ReadFromJsonAsync<List<ReleaseObject>>();
         }
 
-        private async void CheckUpdateKeTCindy()
+        private async Task CheckUpdateKeTCindy()
         {
             var list = await GetReleaseFromGitHub("https://api.github.com/repos/ketpic/ketcindy/releases");
 
@@ -414,8 +434,7 @@ namespace KeTCindyAutoInstallerGUI
                 };
             });
         }
-
-        private async void CheckUpdateKeTTeX()
+        private async Task CheckUpdateKeTTeX()
         {
             var list = await GetReleaseFromGitHub("https://api.github.com/repos/ketpic/kettex/releases");
 
@@ -456,6 +475,121 @@ namespace KeTCindyAutoInstallerGUI
             });
         }
 
+        private async Task CheckUpdateCinderella2()
+        {
+            try
+            {
+                Uri target = new Uri("https://beta.cinderella.de/");
+                string htmlstr = await httpClient.GetStringAsync(target);
+
+                var doc = htmlParser.ParseDocument(htmlstr);
+                var link = doc.QuerySelector("body > ul > li:nth-child(2) > a").GetAttribute("href");
+                var latestUri = new Uri(target, link);
+
+                path_Cinderella = latestUri;
+                WriteLine($"最新版のCinderella2: \"{latestUri}\"");
+
+                var latestItem = CinderellaVersionToolStripMenuItem.DropDownItems.Add($"最新版 ({latestUri})");
+                latestItem.Click += (sender, e) =>
+                {
+                    WriteLine($"Cinderella2を最新版に変更しました。 (url: {latestUri})");
+
+                    path_Cinderella = latestUri;
+                };
+
+                var checkedVersionItem = CinderellaVersionToolStripMenuItem.DropDownItems.Add($"確認済み ({default_path_Cinderella})");
+                checkedVersionItem.Click += (sender, e) =>
+                {
+                    WriteLine($"Cinderella2を確認済みバージョンに変更しました。 ({default_path_Cinderella})");
+
+                    path_Cinderella = default_path_Cinderella;
+                };
+            }
+            catch (Exception)
+            {
+                WriteLine($"例外が発生したため、Cinderella2は確認済みバージョンを使用します。");
+
+                path_Cinderella = default_path_Cinderella;
+            }
+        }
+
+        private async Task CheckUpdateR()
+        {
+            try
+            {
+                Uri target = new Uri("https://cran.r-project.org/bin/windows/base/release.html");
+                string htmlContent = await httpClient.GetStringAsync(target);
+
+                var doc = htmlParser.ParseDocument(htmlContent);
+                var metaTag = doc.QuerySelector("meta[http-equiv=Refresh]") as IHtmlMetaElement;
+                var match = Regex.Match(metaTag.Content, @"(?i)url=([0-9a-zA-Z-.,_~/+]+);?");
+
+                if (!match.Success)
+                    throw new Exception();
+
+                var latestUri = new Uri(target, match.Groups[1].Value.Trim());
+                path_R = latestUri;
+
+                WriteLine($"最新版のR: \"{latestUri}\"");
+
+                var latestItem = RVersionToolStripMenuItem.DropDownItems.Add($"最新版 ({latestUri})");
+                latestItem.Click += (sender, e) =>
+                {
+                    WriteLine($"Rを最新版に変更しました。 ({latestUri})");
+
+                    path_R = latestUri;
+                };
+
+                var checkedVersionItem = RVersionToolStripMenuItem.DropDownItems.Add($"確認済み ({default_path_R})");
+                checkedVersionItem.Click += (sender, e) =>
+                {
+                    WriteLine($"Rを確認済みバージョンに変更しました。 ({default_path_R})");
+
+                    path_R = default_path_R;
+                };
+            }
+            catch (Exception)
+            {
+                WriteLine($"例外が発生したため、Rは確認済みバージョンを使用します。");
+
+                path_R = default_path_R;
+                throw;
+            }
+        }
+
+        private void CheckUpdateMaxima()
+        {
+            try
+            {
+                var latestUri = new Uri("https://sourceforge.net/projects/maxima/files/latest/download");
+                path_maxima = latestUri;
+
+                WriteLine($"最新版のMaxima: \"{latestUri}\"");
+
+                var latestItem = MaximaVersionToolStripMenuItem.DropDownItems.Add($"最新版 ({latestUri})");
+                latestItem.Click += (sender, e) =>
+                {
+                    WriteLine($"Maximaを最新版に変更しました。 ({latestUri})");
+
+                    path_maxima = latestUri;
+                };
+
+                var checkedVersionItem = MaximaVersionToolStripMenuItem.DropDownItems.Add($"確認済み ({default_path_maxima})");
+                checkedVersionItem.Click += (sender, e) =>
+                {
+                    WriteLine($"Maximaを確認済みバージョンに変更しました。 ({default_path_maxima})");
+
+                    path_maxima = default_path_maxima;
+                };
+            }
+            catch (Exception)
+            {
+                WriteLine($"例外が発生したため、Maximaは確認済みバージョンを使用します。");
+
+                path_maxima = default_path_maxima;
+                throw;
+            }
+        }
     }
 }
 
