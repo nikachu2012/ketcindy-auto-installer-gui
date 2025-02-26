@@ -8,21 +8,22 @@
 - SumatraPDF
 - Maxima
 - KeTCindy
+
 ## 最新バージョンでの更新点
-<img width="361" alt="image" src="https://github.com/user-attachments/assets/533fae79-22eb-4796-a5dc-3801e5f615cf">
+![image](https://github.com/user-attachments/assets/db1351ea-23c5-4aea-b239-56b463374a8e)
 
 v1.1より、KeTTeXとKeTCindyについて、GitHub APIから最新バージョンを取得することで、常に最新版がダウンロードされるようになりました。  
 上記画像のようにバージョンの選択を行うことも可能です。
 
-> [!IMPORTANT]
-> 使用しているKeTTeXが Visual C++ 再頒布可能パッケージ を要求するようになったので、事前に https://aka.ms/vs/17/release/vc_redist.x64.exe を事前にインストールしたほうが良いかもしれません。  
-> なくてもインストール時にエラーダイアログが出ますが、`OK`を押し続ければ普通にインストール、利用できます。
+v1.6より、Cinderella2、R、SumatraPDF、Maximaについても公式サイトのHTMLを解析することで、常に最新版がダウンロードされるようになりました。
+最新版と、動作確認を行ったバージョンの2つを選ぶことができます。
 
 ## 使い方
 
 1. 右側のReleasesから最新版をダウンロード
 2. ダブルクリックで実行(`Windows によってPCが保護されました`が表示されたら詳細情報→実行の順にクリック )
 3. Installボタンをクリック
+
 > [!IMPORTANT]
 > KeTTeXのインストール中に"続行するには何かキーを押してください . . ."が表示されたら任意のキーを押さないと続行しないので注意
 5. 設定用のCinderellaファイルが開いたら、`Kettex`, `Mkinit`, `Update`, `Work`の順で黄色のボタンをクリック
@@ -43,4 +44,4 @@ v1.1より、KeTTeXとKeTCindyについて、GitHub APIから最新バージョ�
 - バージョンの自動更新には非対応
 - Windows Formsについてアドバイスくれた某氏ありがとう
 - だれかデジタル署名ください(`Windows によってPCが保護されました`が出なくなる)
-  
+- 某高専の某先生利用報告ありがとうございます。開発の励みになります。
