@@ -46,12 +46,12 @@ namespace KeTCindyAutoInstallerGUI
 
         private async void Form1_Shown(object sender, EventArgs e)
         {
-            WriteLine("Checking for software updates...");
+            WriteLine("ソフトウェアの更新を確認しています...");
 
             path_Cinderella = default_path_Cinderella;
-            path_kettex = default_path_kettex; 
+            path_kettex = default_path_kettex;
             path_R = default_path_R;
-            path_sumatra = default_path_sumatra; 
+            path_sumatra = default_path_sumatra;
             path_maxima = default_path_maxima;
             path_ketcindy = default_path_ketcindy;
 
@@ -66,7 +66,7 @@ namespace KeTCindyAutoInstallerGUI
 
         private async void InstallButton_Click(object sender, EventArgs e)
         {
-            WriteLine("Install started");
+            WriteLine("インストールが開始されました。");
             InstallButton.Enabled = false;
 
             await Install();
@@ -75,7 +75,7 @@ namespace KeTCindyAutoInstallerGUI
         }
         private async Task<bool> Install()
         {
-            WriteLine($"Temp path: {System.IO.Path.GetTempPath()}");
+            WriteLine($"一時フォルダのパス: {System.IO.Path.GetTempPath()}");
 
             DirectoryInfo TempFolder = new DirectoryInfo(Path.Combine(System.IO.Path.GetTempPath(), "KETCINDYINSTALLER"));
 
@@ -83,11 +83,11 @@ namespace KeTCindyAutoInstallerGUI
             {
                 if (TempFolder.Exists)
                 {
-                    WriteLine("TEMP Path exists already.");
-                    WriteLine($"[ERROR] You should delete the path. ({TempFolder.Name})");
+                    WriteLine("一時フォルダが既に存在します。");
+                    WriteLine($"[エラー] 一時フォルダを削除する必要があります。 ({TempFolder.Name})");
 
-                    DialogResult result = MessageBox.Show($"Delete Temp folder ({TempFolder.Name})?",
-                        "Alert",
+                    DialogResult result = MessageBox.Show($"一時フォルダを削除しますか？ ({TempFolder.Name})?",
+                        "警告",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Error,
                         MessageBoxDefaultButton.Button2
@@ -100,29 +100,29 @@ namespace KeTCindyAutoInstallerGUI
                     }
                     else
                     {
-                        WriteLine("Installation has been canceled.");
+                        WriteLine("インストールがキャンセルされました。");
                         return true;
                     }
                 }
 
                 TempFolder.Create();
-                WriteLine("TEMP folder was created successfully.");
+                WriteLine("一時フォルダが正常に作成されました。");
 
 
                 // Cinderella
                 if (cinderella2ToolStripMenuItem.Checked)
                 {
-                    WriteLine("Cinderella is downloading ...");
+                    WriteLine("Cinderellaをダウンロードしています。");
                     if (await InstallExecutable(TempFolder, path_Cinderella, "-q"))
                     {
-                        WriteLine("Cinderella install has been failed.");
+                        WriteLine("Cinderellaのインストールに失敗しました。");
                         return true;
                     }
-                    WriteLine("KeTCindy install has been finished successfully.");
+                    WriteLine("Cinderellaのダウンロードが完了しました。");
                 }
                 else
                 {
-                    WriteLine("KeTCindy install is skipped.");
+                    WriteLine("Cinderellaのインストールをスキップしました。");
                 }
 
                 /////////////////////////////////////////
@@ -131,21 +131,21 @@ namespace KeTCindyAutoInstallerGUI
                 if (keTTeXToolStripMenuItem.Checked)
                 {
                     // download KeTTeX
-                    WriteLine("KeTTeX is downloading ...");
+                    WriteLine("KeTTeXをダウンロードしています...");
                     await DownloadFile(path_kettex, TempFolder, Path.GetFileName(path_kettex.AbsolutePath));
 
 
                     // Install KeTTeX
-                    WriteLine("KeTTeX is installing ...");
+                    WriteLine("KeTTeXをインストールしています...");
                     var kettexInstallerDirectory = new DirectoryInfo("C:\\KETTEX-INSTALLER");
 
                     if (kettexInstallerDirectory.Exists)
                     {
-                        WriteLine("KeTTeX install folder exists already.");
-                        WriteLine($"You should delete the folder. ({kettexInstallerDirectory.FullName})");
+                        WriteLine("KeTTeXのインストールフォルダが既に存在します。");
+                        WriteLine($"フォルダを削除する必要があります。 ({kettexInstallerDirectory.FullName})");
 
-                        DialogResult result = MessageBox.Show($"Delete KeTTeX folder ({kettexInstallerDirectory.Name})?",
-                             "Alert",
+                        DialogResult result = MessageBox.Show($"KeTTeXフォルダを削除しますか？ ({kettexInstallerDirectory.Name})?",
+                             "警告",
                              MessageBoxButtons.YesNo,
                              MessageBoxIcon.Error,
                              MessageBoxDefaultButton.Button2
@@ -157,7 +157,7 @@ namespace KeTCindyAutoInstallerGUI
                         }
                         else
                         {
-                            WriteLine("Installation has been canceled.");
+                            WriteLine("インストールがキャンセルされました。");
                             return true;
                         }
                     }
@@ -175,7 +175,7 @@ namespace KeTCindyAutoInstallerGUI
 
                     if (process_kettex == null)
                     {
-                        WriteLine("KeTTeX install proceess has not been started.");
+                        WriteLine("KeTTeXのインストールプロセスが開始されませんでした。");
                         return true;
                     }
 
@@ -183,80 +183,80 @@ namespace KeTCindyAutoInstallerGUI
                     process_kettex.WaitForExit();
                     if (process_kettex.ExitCode != 0)
                     {
-                        WriteLine("KeTTeX install proceess has not returned exit code 0.");
+                        WriteLine("KeTTeXのインストールプロセスが終了コード0を返しませんでした。");
                         return true;
                     }
                     process_kettex.Close();
 
                     kettexInstallerDirectory.Delete(true);
-                    WriteLine("KeTTeX install has been finished successfully.");
+                    WriteLine("KeTTeXのインストールが正常に完了しました。");
                 }
                 else
                 {
-                    WriteLine("KeTTeX install is skipped.");
+                    WriteLine("KeTTeXのインストールをスキップしました。");
                 }
 
                 // R
                 if (rToolStripMenuItem.Checked)
                 {
-                    WriteLine("R is downloading ...");
+                    WriteLine("Rをダウンロードしています...");
                     if (await InstallExecutable(TempFolder, path_R, "/silent"))
                     {
-                        WriteLine("R install has been failed.");
+                        WriteLine("Rのインストールに失敗しました。");
                         return true;
                     }
-                    WriteLine("R install has been finished successfully.");
+                    WriteLine("Rのインストールが正常に完了しました。");
                 }
                 else
                 {
-                    WriteLine("R install is skipped.");
+                    WriteLine("Rのインストールをスキップしました。");
                 }
 
                 // SumatraPDF
                 if (sumatraPDFToolStripMenuItem.Checked)
                 {
-                    WriteLine("SumatraPDF is downloading ...");
+                    WriteLine("SumatraPDFをダウンロードしています...");
                     if (await InstallExecutable(TempFolder, path_sumatra, "-s -d \"C:\\Program Files\\SumatraPDF\""))
                     {
-                        WriteLine("SumatraPDF install has been failed.");
+                        WriteLine("SumatraPDFのインストールに失敗しました。");
                         return true;
                     }
-                    WriteLine("SumatraPDF install has been finished successfully.");
+                    WriteLine("SumatraPDFのインストールが正常に完了しました。");
                 }
                 else
                 {
-                    WriteLine("SumatraPDF install is skipped.");
+                    WriteLine("SumatraPDFのインストールをスキップしました。");
                 }
 
                 // Maxima
                 if (maximaToolStripMenuItem.Checked)
                 {
-                    WriteLine("Maxima is installing ...");
+                    WriteLine("Maximaをインストールしています...");
                     await InstallExecutable(TempFolder, path_maxima, "/S", "maxima.exe");
-                    WriteLine("Maxima install has been finished successfully.");
+                    WriteLine("Maximaのインストールが正常に完了しました。");
                 }
                 else
                 {
-                    WriteLine("Maxima install is skipped.");
+                    WriteLine("Maximaのインストールをスキップしました。");
                 }
 
                 // download KeTCindy
                 if (keTCindyToolStripMenuItem.Checked)
                 {
-                    WriteLine("KeTCindy is downloading ...");
+                    WriteLine("KeTCindyをダウンロードしています...");
                     await DownloadFile(path_ketcindy, TempFolder, Path.GetFileName(path_ketcindy.AbsolutePath));
 
                     // install KeTCindy
-                    WriteLine("KeTCindy is installing ...");
+                    WriteLine("KeTCindyをインストールしています...");
                     var ketcindyInstallerDirectory = new DirectoryInfo("C:\\ketcindy");
 
                     if (ketcindyInstallerDirectory.Exists)
                     {
-                        WriteLine("KeTCindy install folder exists already.");
-                        WriteLine($"You should delete the folder. ({ketcindyInstallerDirectory.FullName})");
+                        WriteLine("KeTCindyのインストールフォルダが既に存在します。");
+                        WriteLine($"フォルダを削除する必要があります。 ({ketcindyInstallerDirectory.FullName})");
 
-                        DialogResult result = MessageBox.Show($"Delete KeTCindy folder ({TempFolder.Name})?",
-                            "Alert",
+                        DialogResult result = MessageBox.Show($"KeTCindyフォルダを削除しますか？ ({TempFolder.Name})?",
+                            "警告",
                             MessageBoxButtons.YesNo,
                             MessageBoxIcon.Exclamation,
                             MessageBoxDefaultButton.Button2
@@ -268,7 +268,7 @@ namespace KeTCindyAutoInstallerGUI
                         }
                         else
                         {
-                            WriteLine("Installation has been canceled.");
+                            WriteLine("インストールがキャンセルされました。");
                             return true;
                         }
                     }
@@ -278,7 +278,7 @@ namespace KeTCindyAutoInstallerGUI
                     Directory.Move(Path.Combine(TempFolder.FullName, "ketcindy", tempKetcindyFolder.GetDirectories()[0].Name), ketcindyInstallerDirectory.FullName);
 
 
-                    WriteLine("ketcindysettings.cdy is opening...");
+                    WriteLine("ketcindysettings.cdyを開いています...");
                     Process.Start(new ProcessStartInfo()
                     {
                         FileName = Path.Combine(ketcindyInstallerDirectory.FullName, "doc", "ketcindysettings.cdy"),
@@ -287,30 +287,30 @@ namespace KeTCindyAutoInstallerGUI
 
                     await Task.Run(() =>
                     {
-                        MessageBox.Show("Click on \"Kettex\" \"Mkinit\" \"Update\" \"Work\"");
+                        MessageBox.Show("「Kettex」「Mkinit」「Update」「Work」を順にクリックしてください。");
                     });
 
                     // Create Working folder shortcut
-                    WriteLine("Work folder shortcut is creating...");
+                    WriteLine("作業フォルダのショートカットを作成しています...");
                     var shortcutPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), "ketcindy");
                     var shortcutTarget = ketcindyInstallerDirectory.FullName;
                     CreateShortcut(shortcutPath, shortcutTarget);
                 }
                 else
                 {
-                    WriteLine("KeTCindy install is skipped.");
+                    WriteLine("KeTCindyのインストールをスキップしました。");
                 }
 
                 // Cleanup TEMP folder
-                WriteLine("Cleanup TEMP folder");
+                WriteLine("TEMPフォルダをクリーンアップしています");
                 TempFolder.Delete(true);
 
-                WriteLine("!!! Install has been finished successfully.");
+                WriteLine("!!! インストールが正常に完了しました。");
             }
             catch (Exception ex)
             {
-                WriteLine($"Exception detected: {ex}");
-                WriteLine("Error has been occured.");
+                WriteLine($"例外が検出されました: {ex}");
+                WriteLine("エラーが発生しました。");
                 return true;
             }
 
@@ -363,7 +363,7 @@ namespace KeTCindyAutoInstallerGUI
             System.Runtime.InteropServices.Marshal.FinalReleaseComObject(wsh);
         }
 
-        private async Task<bool> InstallExecutable(DirectoryInfo TempFolder, Uri url, string argument, string tempPath=null)
+        private async Task<bool> InstallExecutable(DirectoryInfo TempFolder, Uri url, string argument, string tempPath = null)
         {
             // Download
             await DownloadFile(url, TempFolder, tempPath ?? Path.GetFileName(url.AbsolutePath));
@@ -419,7 +419,7 @@ namespace KeTCindyAutoInstallerGUI
 
             // latest 
             path_ketcindy = new Uri(list[0].zipball_url);
-            WriteLine($"Latest KeTCindy is \"{list[0].name}\"");
+            WriteLine($"最新のKeTCindy: \"{list[0].name}\"");
 
             // create menu
             list.ForEach(element =>
@@ -446,7 +446,7 @@ namespace KeTCindyAutoInstallerGUI
                 }
             });
 
-            WriteLine($"Latest KeTTeX is \"{list[0].name}\" ({list[0].tag_name})");
+            WriteLine($"最新のKeTTeX: \"{list[0].name}\" ({list[0].tag_name})");
 
             // create menu
             list.ForEach(list_element =>
