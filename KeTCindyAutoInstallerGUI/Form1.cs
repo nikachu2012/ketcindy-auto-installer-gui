@@ -209,7 +209,7 @@ namespace KeTCindyAutoInstallerGUI
                 }
 
                 // Maxima
-                if (sumatraPDFToolStripMenuItem.Checked)
+                if (maximaToolStripMenuItem.Checked)
                 {
                     WriteLine("Maxima is installing ...");
                     await InstallExecutable(TempFolder, path_maxima, "/S");
