@@ -46,7 +46,7 @@ namespace KeTCindyAutoInstallerGUI
 
         private async void Form1_Shown(object sender, EventArgs e)
         {
-            WriteLine("ソフトウェアの更新を確認しています...");
+            WriteLine("Checking for software updates...");
 
             path_Cinderella = default_path_Cinderella;
             path_kettex = default_path_kettex;
@@ -66,7 +66,7 @@ namespace KeTCindyAutoInstallerGUI
 
         private async void InstallButton_Click(object sender, EventArgs e)
         {
-            WriteLine("インストールが開始されました。");
+            WriteLine("Installation has started.");
             InstallButton.Enabled = false;
 
             await Install();
@@ -75,7 +75,7 @@ namespace KeTCindyAutoInstallerGUI
         }
         private async Task<bool> Install()
         {
-            WriteLine($"一時フォルダのパス: {System.IO.Path.GetTempPath()}");
+            WriteLine($"Temporary folder's path: {System.IO.Path.GetTempPath()}");
 
             DirectoryInfo TempFolder = new DirectoryInfo(Path.Combine(System.IO.Path.GetTempPath(), "KETCINDYINSTALLER"));
 
@@ -83,11 +83,11 @@ namespace KeTCindyAutoInstallerGUI
             {
                 if (TempFolder.Exists)
                 {
-                    WriteLine("一時フォルダが既に存在します。");
-                    WriteLine($"[エラー] 一時フォルダを削除する必要があります。 ({TempFolder.Name})");
+                    WriteLine("Temporary folder already exists.");
+                    WriteLine($"[Error] The temporary folder must be deleted. ({TempFolder.Name})");
 
-                    DialogResult result = MessageBox.Show($"一時フォルダを削除しますか？ ({TempFolder.Name})?",
-                        "警告",
+                    DialogResult result = MessageBox.Show($"Do you want to delete the temporary folder? ({TempFolder.Name})?",
+                        "Warning",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Error,
                         MessageBoxDefaultButton.Button2
@@ -100,29 +100,29 @@ namespace KeTCindyAutoInstallerGUI
                     }
                     else
                     {
-                        WriteLine("インストールがキャンセルされました。");
+                        WriteLine("Installation was canceled.");
                         return true;
                     }
                 }
 
                 TempFolder.Create();
-                WriteLine("一時フォルダが正常に作成されました。");
+                WriteLine("Temporary folder was successfully created.");
 
 
                 // Cinderella
                 if (cinderella2ToolStripMenuItem.Checked)
                 {
-                    WriteLine("Cinderellaをダウンロードしています。");
+                    WriteLine("Downloading Cinderella.");
                     if (await InstallExecutable(TempFolder, path_Cinderella, "-q"))
                     {
-                        WriteLine("Cinderellaのインストールに失敗しました。");
+                        WriteLine("Installation of Cinderella failed.");
                         return true;
                     }
-                    WriteLine("Cinderellaのダウンロードが完了しました。");
+                    WriteLine("Cinderella download completed.");
                 }
                 else
                 {
-                    WriteLine("Cinderellaのインストールをスキップしました。");
+                    WriteLine("Skipped Cinderella installation.");
                 }
 
                 /////////////////////////////////////////
@@ -131,21 +131,21 @@ namespace KeTCindyAutoInstallerGUI
                 if (keTTeXToolStripMenuItem.Checked)
                 {
                     // download KeTTeX
-                    WriteLine("KeTTeXをダウンロードしています...");
+                    WriteLine("Downloading KeTTeX...");
                     await DownloadFile(path_kettex, TempFolder, Path.GetFileName(path_kettex.AbsolutePath));
 
 
                     // Install KeTTeX
-                    WriteLine("KeTTeXをインストールしています...");
+                    WriteLine("Installing KeTTeX...");
                     var kettexInstallerDirectory = new DirectoryInfo("C:\\KETTEX-INSTALLER");
 
                     if (kettexInstallerDirectory.Exists)
                     {
-                        WriteLine("KeTTeXのインストールフォルダが既に存在します。");
-                        WriteLine($"フォルダを削除する必要があります。 ({kettexInstallerDirectory.FullName})");
+                        WriteLine("The KeTTeX installation folder already exists.");
+                        WriteLine($"The folder must be deleted. ({kettexInstallerDirectory.FullName})");
 
-                        DialogResult result = MessageBox.Show($"KeTTeXフォルダを削除しますか？ ({kettexInstallerDirectory.Name})?",
-                             "警告",
+                        DialogResult result = MessageBox.Show($"Do you want to delete the KeTTeX folder? ({kettexInstallerDirectory.Name})?",
+                             "Warning",
                              MessageBoxButtons.YesNo,
                              MessageBoxIcon.Error,
                              MessageBoxDefaultButton.Button2
@@ -157,7 +157,7 @@ namespace KeTCindyAutoInstallerGUI
                         }
                         else
                         {
-                            WriteLine("インストールがキャンセルされました。");
+                            WriteLine("Installation was canceled.");
                             return true;
                         }
                     }
@@ -175,7 +175,7 @@ namespace KeTCindyAutoInstallerGUI
 
                     if (process_kettex == null)
                     {
-                        WriteLine("KeTTeXのインストールプロセスが開始されませんでした。");
+                        WriteLine("The KeTTeX installation process has not started.");
                         return true;
                     }
 
@@ -183,80 +183,80 @@ namespace KeTCindyAutoInstallerGUI
                     process_kettex.WaitForExit();
                     if (process_kettex.ExitCode != 0)
                     {
-                        WriteLine("KeTTeXのインストールプロセスが終了コード0を返しませんでした。");
+                        WriteLine("The KeTTeX installation process did not return exit code 0.");
                         return true;
                     }
                     process_kettex.Close();
 
                     kettexInstallerDirectory.Delete(true);
-                    WriteLine("KeTTeXのインストールが正常に完了しました。");
+                    WriteLine("KeTTeX was successfully installed.");
                 }
                 else
                 {
-                    WriteLine("KeTTeXのインストールをスキップしました。");
+                    WriteLine("Skipped KeTTeX installation.");
                 }
 
                 // R
                 if (rToolStripMenuItem.Checked)
                 {
-                    WriteLine("Rをダウンロードしています...");
+                    WriteLine("Downloading R...");
                     if (await InstallExecutable(TempFolder, path_R, "/silent"))
                     {
-                        WriteLine("Rのインストールに失敗しました。");
+                        WriteLine("R installation failed.");
                         return true;
                     }
-                    WriteLine("Rのインストールが正常に完了しました。");
+                    WriteLine("R was successfully installed.");
                 }
                 else
                 {
-                    WriteLine("Rのインストールをスキップしました。");
+                    WriteLine("Skipped R installation.");
                 }
 
                 // SumatraPDF
                 if (sumatraPDFToolStripMenuItem.Checked)
                 {
-                    WriteLine("SumatraPDFをダウンロードしています...");
+                    WriteLine("Downloading SumatraPDF...");
                     if (await InstallExecutable(TempFolder, path_sumatra, "-s -d \"C:\\Program Files\\SumatraPDF\""))
                     {
-                        WriteLine("SumatraPDFのインストールに失敗しました。");
+                        WriteLine("SumatraPDF installation failed.");
                         return true;
                     }
-                    WriteLine("SumatraPDFのインストールが正常に完了しました。");
+                    WriteLine("SumatraPDF was successfully installed.");
                 }
                 else
                 {
-                    WriteLine("SumatraPDFのインストールをスキップしました。");
+                    WriteLine("Skipped SumatraPDF installation.");
                 }
 
                 // Maxima
                 if (maximaToolStripMenuItem.Checked)
                 {
-                    WriteLine("Maximaをインストールしています...");
+                    WriteLine("Installing Maxima...");
                     await InstallExecutable(TempFolder, path_maxima, "/S", "maxima.exe");
-                    WriteLine("Maximaのインストールが正常に完了しました。");
+                    WriteLine("Maxima was successfully installed.");
                 }
                 else
                 {
-                    WriteLine("Maximaのインストールをスキップしました。");
+                    WriteLine("Skipped Maxima installation.");
                 }
 
                 // download KeTCindy
                 if (keTCindyToolStripMenuItem.Checked)
                 {
-                    WriteLine("KeTCindyをダウンロードしています...");
+                    WriteLine("Downloading KeTCindy...");
                     await DownloadFile(path_ketcindy, TempFolder, Path.GetFileName(path_ketcindy.AbsolutePath));
 
                     // install KeTCindy
-                    WriteLine("KeTCindyをインストールしています...");
+                    WriteLine("Installing KeTCindy...");
                     var ketcindyInstallerDirectory = new DirectoryInfo("C:\\ketcindy");
 
                     if (ketcindyInstallerDirectory.Exists)
                     {
-                        WriteLine("KeTCindyのインストールフォルダが既に存在します。");
-                        WriteLine($"フォルダを削除する必要があります。 ({ketcindyInstallerDirectory.FullName})");
+                        WriteLine("The KeTCindy installation folder already exists.");
+                        WriteLine($"The folder must be deleted. ({ketcindyInstallerDirectory.FullName})");
 
-                        DialogResult result = MessageBox.Show($"KeTCindyフォルダを削除しますか？ ({TempFolder.Name})?",
-                            "警告",
+                        DialogResult result = MessageBox.Show($"Do you want to delete the KeTCindy folder? ({TempFolder.Name})?",
+                            "Warning",
                             MessageBoxButtons.YesNo,
                             MessageBoxIcon.Exclamation,
                             MessageBoxDefaultButton.Button2
@@ -268,7 +268,7 @@ namespace KeTCindyAutoInstallerGUI
                         }
                         else
                         {
-                            WriteLine("インストールがキャンセルされました。");
+                            WriteLine("Installation was canceled.");
                             return true;
                         }
                     }
@@ -278,7 +278,7 @@ namespace KeTCindyAutoInstallerGUI
                     Directory.Move(Path.Combine(TempFolder.FullName, "ketcindy", tempKetcindyFolder.GetDirectories()[0].Name), ketcindyInstallerDirectory.FullName);
 
 
-                    WriteLine("ketcindysettings.cdyを開いています...");
+                    WriteLine("Opening ketcindysettings.cdy...");
                     Process.Start(new ProcessStartInfo()
                     {
                         FileName = Path.Combine(ketcindyInstallerDirectory.FullName, "doc", "ketcindysettings.cdy"),
@@ -287,30 +287,30 @@ namespace KeTCindyAutoInstallerGUI
 
                     await Task.Run(() =>
                     {
-                        MessageBox.Show("「Kettex」「Mkinit」「Update」「Work」を順にクリックしてください。");
+                        MessageBox.Show("Please click \"Kettex\", \"Mkinit\", \"Update\", and \"Work\" in order.");
                     });
 
                     // Create Working folder shortcut
-                    WriteLine("作業フォルダのショートカットを作成しています...");
+                    WriteLine("Creating a shortcut to the working folder...");
                     var shortcutPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), "ketcindy");
                     var shortcutTarget = ketcindyInstallerDirectory.FullName;
                     CreateShortcut(shortcutPath, shortcutTarget);
                 }
                 else
                 {
-                    WriteLine("KeTCindyのインストールをスキップしました。");
+                    WriteLine("Skipped KeTCindy installation.");
                 }
 
                 // Cleanup TEMP folder
-                WriteLine("TEMPフォルダをクリーンアップしています");
+                WriteLine("Cleaning up TEMP folder");
                 TempFolder.Delete(true);
 
-                WriteLine("!!! インストールが正常に完了しました。");
+                WriteLine("!!! Installation completed successfully.");
             }
             catch (Exception ex)
             {
-                WriteLine($"例外が検出されました: {ex}");
-                WriteLine("エラーが発生しました。");
+                WriteLine($"Exception detected: {ex}");
+                WriteLine("An error has occurred.");
                 return true;
             }
 
@@ -419,7 +419,7 @@ namespace KeTCindyAutoInstallerGUI
 
             // latest 
             path_ketcindy = new Uri(list[0].zipball_url);
-            WriteLine($"最新のKeTCindy: \"{list[0].name}\"");
+            WriteLine($"Latest KeTCindy: \"{list[0].name}\"");
 
             // create menu
             list.ForEach(element =>
@@ -446,7 +446,7 @@ namespace KeTCindyAutoInstallerGUI
                 }
             });
 
-            WriteLine($"最新のKeTTeX: \"{list[0].name}\" ({list[0].tag_name})");
+            WriteLine($"Latest KeTTeX: \"{list[0].name}\" ({list[0].tag_name})");
 
             // create menu
             list.ForEach(list_element =>
@@ -487,27 +487,27 @@ namespace KeTCindyAutoInstallerGUI
                 var latestUri = new Uri(target, link);
 
                 path_Cinderella = latestUri;
-                WriteLine($"最新版のCinderella2: \"{latestUri}\"");
+                WriteLine($"Latest Cinderella2: \"{latestUri}\"");
 
-                var latestItem = CinderellaVersionToolStripMenuItem.DropDownItems.Add($"最新版 ({latestUri})");
+                var latestItem = CinderellaVersionToolStripMenuItem.DropDownItems.Add($"Latest ({latestUri})");
                 latestItem.Click += (sender, e) =>
                 {
-                    WriteLine($"Cinderella2を最新版に変更しました。 (url: {latestUri})");
+                    WriteLine($"Changed Cinderella2 to latest. (url: {latestUri})");
 
                     path_Cinderella = latestUri;
                 };
 
-                var checkedVersionItem = CinderellaVersionToolStripMenuItem.DropDownItems.Add($"確認済み ({default_path_Cinderella})");
+                var checkedVersionItem = CinderellaVersionToolStripMenuItem.DropDownItems.Add($"Verified ({default_path_Cinderella})");
                 checkedVersionItem.Click += (sender, e) =>
                 {
-                    WriteLine($"Cinderella2を確認済みバージョンに変更しました。 ({default_path_Cinderella})");
+                    WriteLine($"Changed Cinderella2 to verified version. ({default_path_Cinderella})");
 
                     path_Cinderella = default_path_Cinderella;
                 };
             }
             catch (Exception)
             {
-                WriteLine($"例外が発生したため、Cinderella2は確認済みバージョンを使用します。");
+                WriteLine($"Since an exception occurred, the verified version of Cinderella2 will be used.");
 
                 path_Cinderella = default_path_Cinderella;
             }
@@ -530,27 +530,27 @@ namespace KeTCindyAutoInstallerGUI
                 var latestUri = new Uri(target, match.Groups[1].Value.Trim());
                 path_R = latestUri;
 
-                WriteLine($"最新版のR: \"{latestUri}\"");
+                WriteLine($"Latest R: \"{latestUri}\"");
 
-                var latestItem = RVersionToolStripMenuItem.DropDownItems.Add($"最新版 ({latestUri})");
+                var latestItem = RVersionToolStripMenuItem.DropDownItems.Add($"Latest ({latestUri})");
                 latestItem.Click += (sender, e) =>
                 {
-                    WriteLine($"Rを最新版に変更しました。 ({latestUri})");
+                    WriteLine($"Changed R to latest. ({latestUri})");
 
                     path_R = latestUri;
                 };
 
-                var checkedVersionItem = RVersionToolStripMenuItem.DropDownItems.Add($"確認済み ({default_path_R})");
+                var checkedVersionItem = RVersionToolStripMenuItem.DropDownItems.Add($"Verified ({default_path_R})");
                 checkedVersionItem.Click += (sender, e) =>
                 {
-                    WriteLine($"Rを確認済みバージョンに変更しました。 ({default_path_R})");
+                    WriteLine($"Changed R to verified version. ({default_path_R})");
 
                     path_R = default_path_R;
                 };
             }
             catch (Exception)
             {
-                WriteLine($"例外が発生したため、Rは確認済みバージョンを使用します。");
+                WriteLine($"Since an exception occurred, the verified version of R will be used.");
 
                 path_R = default_path_R;
                 throw;
@@ -564,27 +564,27 @@ namespace KeTCindyAutoInstallerGUI
                 var latestUri = new Uri("https://sourceforge.net/projects/maxima/files/latest/download");
                 path_maxima = latestUri;
 
-                WriteLine($"最新版のMaxima: \"{latestUri}\"");
+                WriteLine($"Latest Maxima: \"{latestUri}\"");
 
-                var latestItem = MaximaVersionToolStripMenuItem.DropDownItems.Add($"最新版 ({latestUri})");
+                var latestItem = MaximaVersionToolStripMenuItem.DropDownItems.Add($"Latest ({latestUri})");
                 latestItem.Click += (sender, e) =>
                 {
-                    WriteLine($"Maximaを最新版に変更しました。 ({latestUri})");
+                    WriteLine($"Changed Maxima to latest. ({latestUri})");
 
                     path_maxima = latestUri;
                 };
 
-                var checkedVersionItem = MaximaVersionToolStripMenuItem.DropDownItems.Add($"確認済み ({default_path_maxima})");
+                var checkedVersionItem = MaximaVersionToolStripMenuItem.DropDownItems.Add($"Verified ({default_path_maxima})");
                 checkedVersionItem.Click += (sender, e) =>
                 {
-                    WriteLine($"Maximaを確認済みバージョンに変更しました。 ({default_path_maxima})");
+                    WriteLine($"Changed Maxima to verified version. ({default_path_maxima})");
 
                     path_maxima = default_path_maxima;
                 };
             }
             catch (Exception)
             {
-                WriteLine($"例外が発生したため、Maximaは確認済みバージョンを使用します。");
+                WriteLine($"Since an exception occurred, the verified version of Maxima will be used.");
 
                 path_maxima = default_path_maxima;
                 throw;
