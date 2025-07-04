@@ -43,11 +43,12 @@
             this.sumatraPDFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.maximaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.keTCindyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectVersionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CinderellaVersionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.KeTCindyVersionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.KeTTeXVersionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RVersionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MaximaVersionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.KeTCindyVersionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -120,28 +121,24 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.closeToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(79, 29);
-            this.fileToolStripMenuItem.Text = "ファイル";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(54, 30);
+            this.fileToolStripMenuItem.Text = "File";
             // 
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
             this.closeToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(224, 34);
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
             this.closeToolStripMenuItem.Text = "閉じる";
             // 
             // configToolStripMenuItem
             // 
             this.configToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.インストールするソフトを選択ToolStripMenuItem,
-            this.CinderellaVersionToolStripMenuItem,
-            this.KeTTeXVersionToolStripMenuItem,
-            this.RVersionToolStripMenuItem,
-            this.MaximaVersionToolStripMenuItem,
-            this.KeTCindyVersionToolStripMenuItem});
+            this.selectVersionToolStripMenuItem});
             this.configToolStripMenuItem.Name = "configToolStripMenuItem";
-            this.configToolStripMenuItem.Size = new System.Drawing.Size(64, 29);
-            this.configToolStripMenuItem.Text = "設定";
+            this.configToolStripMenuItem.Size = new System.Drawing.Size(84, 29);
+            this.configToolStripMenuItem.Text = "Setting";
             // 
             // インストールするソフトを選択ToolStripMenuItem
             // 
@@ -153,8 +150,8 @@
             this.maximaToolStripMenuItem,
             this.keTCindyToolStripMenuItem});
             this.インストールするソフトを選択ToolStripMenuItem.Name = "インストールするソフトを選択ToolStripMenuItem";
-            this.インストールするソフトを選択ToolStripMenuItem.Size = new System.Drawing.Size(309, 34);
-            this.インストールするソフトを選択ToolStripMenuItem.Text = "インストールするソフトを選択";
+            this.インストールするソフトを選択ToolStripMenuItem.Size = new System.Drawing.Size(283, 34);
+            this.インストールするソフトを選択ToolStripMenuItem.Text = "Select install software";
             // 
             // cinderella2ToolStripMenuItem
             // 
@@ -210,35 +207,47 @@
             this.keTCindyToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
             this.keTCindyToolStripMenuItem.Text = "KeTCindy";
             // 
+            // selectVersionToolStripMenuItem
+            // 
+            this.selectVersionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.CinderellaVersionToolStripMenuItem,
+            this.KeTTeXVersionToolStripMenuItem,
+            this.RVersionToolStripMenuItem,
+            this.MaximaVersionToolStripMenuItem,
+            this.KeTCindyVersionToolStripMenuItem});
+            this.selectVersionToolStripMenuItem.Name = "selectVersionToolStripMenuItem";
+            this.selectVersionToolStripMenuItem.Size = new System.Drawing.Size(283, 34);
+            this.selectVersionToolStripMenuItem.Text = "Select version";
+            // 
             // CinderellaVersionToolStripMenuItem
             // 
             this.CinderellaVersionToolStripMenuItem.Name = "CinderellaVersionToolStripMenuItem";
-            this.CinderellaVersionToolStripMenuItem.Size = new System.Drawing.Size(309, 34);
-            this.CinderellaVersionToolStripMenuItem.Text = "Cinderellaのバージョン";
-            // 
-            // KeTCindyVersionToolStripMenuItem
-            // 
-            this.KeTCindyVersionToolStripMenuItem.Name = "KeTCindyVersionToolStripMenuItem";
-            this.KeTCindyVersionToolStripMenuItem.Size = new System.Drawing.Size(309, 34);
-            this.KeTCindyVersionToolStripMenuItem.Text = "KeTCindyのバージョン";
+            this.CinderellaVersionToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.CinderellaVersionToolStripMenuItem.Text = "Cinderella version";
             // 
             // KeTTeXVersionToolStripMenuItem
             // 
             this.KeTTeXVersionToolStripMenuItem.Name = "KeTTeXVersionToolStripMenuItem";
-            this.KeTTeXVersionToolStripMenuItem.Size = new System.Drawing.Size(309, 34);
-            this.KeTTeXVersionToolStripMenuItem.Text = "KeTTeXのバージョン";
+            this.KeTTeXVersionToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.KeTTeXVersionToolStripMenuItem.Text = "KeTTeX version";
             // 
             // RVersionToolStripMenuItem
             // 
             this.RVersionToolStripMenuItem.Name = "RVersionToolStripMenuItem";
-            this.RVersionToolStripMenuItem.Size = new System.Drawing.Size(309, 34);
-            this.RVersionToolStripMenuItem.Text = "Rのバージョン";
+            this.RVersionToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.RVersionToolStripMenuItem.Text = "R version";
             // 
             // MaximaVersionToolStripMenuItem
             // 
             this.MaximaVersionToolStripMenuItem.Name = "MaximaVersionToolStripMenuItem";
-            this.MaximaVersionToolStripMenuItem.Size = new System.Drawing.Size(309, 34);
-            this.MaximaVersionToolStripMenuItem.Text = "Maximaのバージョン";
+            this.MaximaVersionToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.MaximaVersionToolStripMenuItem.Text = "Maxima version";
+            // 
+            // KeTCindyVersionToolStripMenuItem
+            // 
+            this.KeTCindyVersionToolStripMenuItem.Name = "KeTCindyVersionToolStripMenuItem";
+            this.KeTCindyVersionToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.KeTCindyVersionToolStripMenuItem.Text = "KeTCindy version";
             // 
             // Form1
             // 
@@ -271,8 +280,6 @@
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem configToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem KeTCindyVersionToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem KeTTeXVersionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem インストールするソフトを選択ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cinderella2ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem keTTeXToolStripMenuItem;
@@ -280,9 +287,12 @@
         private System.Windows.Forms.ToolStripMenuItem sumatraPDFToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem maximaToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem keTCindyToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem selectVersionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem CinderellaVersionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem KeTTeXVersionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem RVersionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem MaximaVersionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem KeTCindyVersionToolStripMenuItem;
     }
 }
 
