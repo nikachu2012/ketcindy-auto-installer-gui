@@ -287,7 +287,12 @@ namespace KeTCindyAutoInstallerGUI
 
                     await Task.Run(() =>
                     {
-                        MessageBox.Show("Please click \"Kettex\", \"Mkinit\", \"Update\", and \"Work\" in order.");
+                        MessageBox.Show("Please click \"Kettex\", \"Mkinit\", \"Update\", and \"Work\" in order.",
+                                     "next step",
+                                     MessageBoxButtons.OK,
+                                     MessageBoxIcon.Information,
+                                     MessageBoxDefaultButton.Button1,
+                                     MessageBoxOptions.ServiceNotification);
                     });
 
                     // Create Working folder shortcut
