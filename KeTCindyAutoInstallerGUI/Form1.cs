@@ -488,7 +488,7 @@ namespace KeTCindyAutoInstallerGUI
                 string htmlstr = await httpClient.GetStringAsync(target);
 
                 var doc = htmlParser.ParseDocument(htmlstr);
-                var link = doc.QuerySelector("body > ul > li:nth-child(2) > a").GetAttribute("href");
+                var link = doc.QuerySelector("body > ul > li:nth-child(1) > a").GetAttribute("href");
                 var latestUri = new Uri(target, link);
 
                 path_Cinderella = latestUri;
