@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.RegularExpressions;
@@ -49,6 +50,7 @@ namespace KeTCindyAutoInstallerGUI
             WriteLine("Checking for software updates...");
 
             path_Cinderella = default_path_Cinderella;
+
             path_kettex = default_path_kettex;
             path_R = default_path_R;
             path_sumatra = default_path_sumatra;
@@ -61,6 +63,7 @@ namespace KeTCindyAutoInstallerGUI
             CheckUpdateMaxima(); // not need await
             await CheckUpdateKeTCindy();
 
+            configToolStripMenuItem.Enabled = true;
             InstallButton.Enabled = true;
         }
 
@@ -427,17 +430,29 @@ namespace KeTCindyAutoInstallerGUI
             WriteLine($"Latest KeTCindy: \"{list[0].name}\"");
 
             // create menu
-            list.ForEach(element =>
+            foreach (var (element, index) in list.Select((element, index) => (element, index)))
             {
-                var versionItem = KeTCindyVersionToolStripMenuItem.DropDownItems.Add($"{element.name} ({element.tag_name})");
+                var versionItem = new ToolStripMenuItem($"{element.name} ({element.tag_name})");
+                KeTCindyVersionToolStripMenuItem.DropDownItems.Add(versionItem);
                 versionItem.ToolTipText = $"url: {element.zipball_url}";
+
+                if (index == 0)
+                {
+                    versionItem.Checked = true;
+                }
 
                 versionItem.Click += (sender, e) =>
                 {
+                    foreach (ToolStripMenuItem t in KeTCindyVersionToolStripMenuItem.DropDownItems)
+                    {
+                        t.Checked = false;
+                    }
+
                     WriteLine($"Changed KeTCindy \"{element.name}\" (url: {element.zipball_url})");
                     path_ketcindy = new Uri(element.zipball_url);
+                    versionItem.Checked = true;
                 };
-            });
+            }
         }
         private async Task CheckUpdateKeTTeX()
         {
@@ -453,6 +468,7 @@ namespace KeTCindyAutoInstallerGUI
 
             WriteLine($"Latest KeTTeX: \"{list[0].name}\" ({list[0].tag_name})");
 
+            bool firstFlag = false;
             // create menu
             list.ForEach(list_element =>
             {
@@ -466,13 +482,26 @@ namespace KeTCindyAutoInstallerGUI
                 {
                     if (assets_element.name.Contains("windows"))
                     {
-                        var versionItem = KeTTeXVersionToolStripMenuItem.DropDownItems.Add($"{list_element.name} ({list_element.tag_name})");
+                        var versionItem = new ToolStripMenuItem($"{list_element.name} ({list_element.tag_name})");
+                        KeTTeXVersionToolStripMenuItem.DropDownItems.Add(versionItem);
+
+                        if (!firstFlag)
+                        {
+                            versionItem.Checked = true;
+                            firstFlag = true;
+                        }
 
                         versionItem.Click += (sender, e) =>
                         {
+                            foreach (ToolStripMenuItem t in KeTTeXVersionToolStripMenuItem.DropDownItems)
+                            {
+                                t.Checked = false;
+                            }
+
                             WriteLine($"Changed \"{list_element.name}\" (url: {assets_element.browser_download_url})");
 
                             path_kettex = new Uri(assets_element.browser_download_url);
+                            versionItem.Checked = true;
                         };
 
                     }
@@ -494,20 +523,37 @@ namespace KeTCindyAutoInstallerGUI
                 path_Cinderella = latestUri;
                 WriteLine($"Latest Cinderella2: \"{latestUri}\"");
 
-                var latestItem = CinderellaVersionToolStripMenuItem.DropDownItems.Add($"Latest ({latestUri})");
+                var latestItem = new ToolStripMenuItem($"Latest ({latestUri})");
+                CinderellaVersionToolStripMenuItem.DropDownItems.Add(latestItem);
+                latestItem.Checked = true;
+
+                var checkedVersionItem = new ToolStripMenuItem($"Verified ({default_path_Cinderella})");
+                CinderellaVersionToolStripMenuItem.DropDownItems.Add(checkedVersionItem);
+
+
                 latestItem.Click += (sender, e) =>
                 {
+                    // reset check
+                    latestItem.Checked = false;
+                    checkedVersionItem.Checked = false;
+
                     WriteLine($"Changed Cinderella2 to latest. (url: {latestUri})");
 
                     path_Cinderella = latestUri;
+                    latestItem.Checked = true;
                 };
 
-                var checkedVersionItem = CinderellaVersionToolStripMenuItem.DropDownItems.Add($"Verified ({default_path_Cinderella})");
+
                 checkedVersionItem.Click += (sender, e) =>
                 {
+                    // reset check
+                    latestItem.Checked = false;
+                    checkedVersionItem.Checked = false;
+
                     WriteLine($"Changed Cinderella2 to verified version. ({default_path_Cinderella})");
 
                     path_Cinderella = default_path_Cinderella;
+                    checkedVersionItem.Checked = true;
                 };
             }
             catch (Exception)
@@ -537,20 +583,37 @@ namespace KeTCindyAutoInstallerGUI
 
                 WriteLine($"Latest R: \"{latestUri}\"");
 
-                var latestItem = RVersionToolStripMenuItem.DropDownItems.Add($"Latest ({latestUri})");
+
+                var latestItem = new ToolStripMenuItem($"Latest ({latestUri})");
+                RVersionToolStripMenuItem.DropDownItems.Add(latestItem);
+                latestItem.Checked = true;
+
+                var checkedVersionItem = new ToolStripMenuItem($"Verified ({default_path_R})");
+                RVersionToolStripMenuItem.DropDownItems.Add(checkedVersionItem);
+
+
                 latestItem.Click += (sender, e) =>
                 {
+                    // reset check
+                    latestItem.Checked = false;
+                    checkedVersionItem.Checked = false;
+
                     WriteLine($"Changed R to latest. ({latestUri})");
 
                     path_R = latestUri;
+                    latestItem.Checked = true;
                 };
 
-                var checkedVersionItem = RVersionToolStripMenuItem.DropDownItems.Add($"Verified ({default_path_R})");
                 checkedVersionItem.Click += (sender, e) =>
                 {
+                    // reset check
+                    latestItem.Checked = false;
+                    checkedVersionItem.Checked = false;
+
                     WriteLine($"Changed R to verified version. ({default_path_R})");
 
                     path_R = default_path_R;
+                    checkedVersionItem.Checked = true;
                 };
             }
             catch (Exception)
@@ -558,7 +621,6 @@ namespace KeTCindyAutoInstallerGUI
                 WriteLine($"Since an exception occurred, the verified version of R will be used.");
 
                 path_R = default_path_R;
-                throw;
             }
         }
 
@@ -571,20 +633,35 @@ namespace KeTCindyAutoInstallerGUI
 
                 WriteLine($"Latest Maxima: \"{latestUri}\"");
 
-                var latestItem = MaximaVersionToolStripMenuItem.DropDownItems.Add($"Latest ({latestUri})");
+                var latestItem = new ToolStripMenuItem($"Latest ({latestUri})");
+                MaximaVersionToolStripMenuItem.DropDownItems.Add(latestItem);
+                latestItem.Checked = true;
+
+                var checkedVersionItem = new ToolStripMenuItem($"Verified ({default_path_maxima})");
+                MaximaVersionToolStripMenuItem.DropDownItems.Add(checkedVersionItem);
+
                 latestItem.Click += (sender, e) =>
                 {
+                    // reset check
+                    latestItem.Checked = false;
+                    checkedVersionItem.Checked = false;
+
                     WriteLine($"Changed Maxima to latest. ({latestUri})");
 
                     path_maxima = latestUri;
+                    latestItem.Checked = true;
                 };
 
-                var checkedVersionItem = MaximaVersionToolStripMenuItem.DropDownItems.Add($"Verified ({default_path_maxima})");
                 checkedVersionItem.Click += (sender, e) =>
                 {
+                    // reset check
+                    latestItem.Checked = false;
+                    checkedVersionItem.Checked = false;
+
                     WriteLine($"Changed Maxima to verified version. ({default_path_maxima})");
 
                     path_maxima = default_path_maxima;
+                    checkedVersionItem.Checked = true;
                 };
             }
             catch (Exception)
@@ -592,7 +669,6 @@ namespace KeTCindyAutoInstallerGUI
                 WriteLine($"Since an exception occurred, the verified version of Maxima will be used.");
 
                 path_maxima = default_path_maxima;
-                throw;
             }
         }
     }
