@@ -568,7 +568,7 @@ namespace KeTCindyAutoInstallerGUI
         {
             try
             {
-                Uri target = new Uri("https://cran.r-project.org/bin/windows/base/release.html");
+                Uri target = new Uri("https://ftp.yz.yamagata-u.ac.jp/pub/cran/bin/windows/base/release.html");
                 string htmlContent = await httpClient.GetStringAsync(target);
 
                 var doc = htmlParser.ParseDocument(htmlContent);
