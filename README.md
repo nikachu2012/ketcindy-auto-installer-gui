@@ -24,7 +24,12 @@ v1.6より、Cinderella2、R、Maximaについても公式サイトのHTMLを解
 
 1.  右側のReleasesから最新版をダウンロード
 2.  ダブルクリックで実行(`Windows によってPCが保護されました`が表示されたら詳細情報→実行の順にクリック )
-3.  Installボタンをクリック
+
+> [\!IMPORTANT]
+> スマートアプリコントロールによってブロックされた場合には、以下のウェブサイトを参考にスマートアプリコントロールを無効にしてください。  
+> https://www2.mouse-jp.co.jp/ssl/user_support2/sc_faq_documents.asp?FaqID=53952
+
+4.  Installボタンをクリック
 
 > [\!IMPORTANT]
 > KeTTeXのインストール中に"続行するには何かキーを押してください . . ."が表示されたら任意のキーを押さないと続行しないので注意
@@ -79,7 +84,12 @@ You can choose between the latest version and a version that has been confirmed 
 
 1.  Download the latest version from Releases on the right.
 2.  Run by double-clicking (if `Windows protected your PC` is displayed, click `More info` → `Run anyway`).
-3.  Click the Install button.
+
+> [\!IMPORTANT]
+> If it is blocked by Smart App Control, please refer to the following website to disable Smart App Control.  
+> https://www2.mouse-jp.co.jp/ssl/user_support2/sc_faq_documents.asp?FaqID=53952
+
+4.  Click the Install button.
 
 > [\!IMPORTANT]
 > During the KeTTeX installation, note that it will not proceed unless you press a key when "Press any key to continue . . ." is displayed.
